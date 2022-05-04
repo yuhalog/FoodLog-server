@@ -1,1 +1,45 @@
-Food Log Server
+# Food Log Server
+
+
+## 개발 환경
+
+Spring Boot | 2.6.7
+
+언어 | Java 11
+
+타입 | Gradle
+
+JDK | version 11.0
+
+Group | dku.capstone
+
+Name | food-log
+
+DB | mariaDB
+
+Dependencies
+- Spring Web
+- Spring Boot Devtools
+- Lombok
+- Spring Data JPA
+- Spring Security
+- OAuth2 Client
+
+<br>
+
+``application.yml``
+
+```
+spring:
+  datasource:
+    driver-class-name: org.mariadb.jdbc.Driver
+    url: mariadb://localhost:3306/food_log
+    username: 아이디
+    password: 비밀번호
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+      format_sql: true
+      show-sql: true
+```

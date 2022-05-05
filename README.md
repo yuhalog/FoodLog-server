@@ -33,7 +33,7 @@ Dependencies
 spring:
   datasource:
     driver-class-name: org.mariadb.jdbc.Driver
-    url: mariadb://localhost:3306/food_log
+    url: jdbc:mariadb://localhost:3306/food_log
     username: 아이디
     password: 비밀번호
 

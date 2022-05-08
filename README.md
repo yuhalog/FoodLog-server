@@ -1,5 +1,20 @@
 # Food Log Server
 
+## 프로젝트 구조
+
+```
+foodlog
+├── api
+├── config
+├───├── auth
+├── domain
+├── dto
+├───├── response
+├───├── request
+├── repository
+└── service
+```
+
 
 ## 개발 환경
 

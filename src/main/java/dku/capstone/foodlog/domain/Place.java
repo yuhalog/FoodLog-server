@@ -23,4 +23,7 @@ public class Place {
 
     @OneToMany(mappedBy = "place")
     private List<Post> postList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "place")
+    private PlacePost placePost;
 }

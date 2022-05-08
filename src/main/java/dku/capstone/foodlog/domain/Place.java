@@ -21,6 +21,6 @@ public class Place {
 
     private Double longitude;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(mappedBy = "place")
     private List<Post> postList = new ArrayList<>();
 }

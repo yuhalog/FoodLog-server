@@ -22,7 +22,7 @@ public class Member extends BaseTime{
 
     private String email;
 
-    private Gender Gender;
+    private Gender gender;
 
     private Date birthday;
 
@@ -34,7 +34,7 @@ public class Member extends BaseTime{
 
     @OneToOne
     @JoinColumn(name = "picture_id")
-    private Picture profilePic;
+    private Picture profilePicture;
 
     private String selfBio;
 

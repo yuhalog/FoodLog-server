@@ -1,9 +1,6 @@
 package dku.capstone.foodlog.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 public class Picture extends BaseTime{
@@ -12,6 +9,13 @@ public class Picture extends BaseTime{
     @Column(name = "picture_id")
     private Long id;
 
-    private String postUrl;
+    private String pictureUrl;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    @OneToOne(mappedBy = "profilePicture")
+    private Member member;
 
 }

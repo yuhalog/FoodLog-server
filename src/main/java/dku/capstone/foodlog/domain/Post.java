@@ -10,18 +10,17 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Post {
+public class Post extends BaseTime{
 
     @Id @GeneratedValue
-    @Column
+    @Column(name = "post_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    private Member writer;
+    private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_picture_id")
+    @OneToMany(mappedBy = "post")
     private List<Picture> pictureList = new ArrayList<>();
 
     private Float rating;
@@ -34,13 +33,13 @@ public class Post {
     @Enumerated(EnumType.STRING)
     private FoodPurpose purpose;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
 
     private Date date;
 
-    @OneToMany(mappedBy = "comment")
+    @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
 
 }

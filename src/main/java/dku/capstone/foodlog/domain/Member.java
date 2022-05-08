@@ -22,6 +22,7 @@ public class Member extends BaseTime{
 
     private String email;
 
+    @Enumerated(EnumType.STRING)
     private Gender gender;
 
     private Date birthday;

@@ -3,10 +3,10 @@ package dku.capstone.foodlog.domain;
 import javax.persistence.*;
 
 @Entity
-public class Picture extends BaseTime{
+public class PostPicture extends BaseTime{
 
     @Id @GeneratedValue
-    @Column(name = "picture_id")
+    @Column(name = "post_picture_id")
     private Long id;
 
     private String pictureUrl;

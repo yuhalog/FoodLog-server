@@ -32,9 +32,7 @@ public class Member extends BaseTime{
     @OneToMany(mappedBy = "member")
     private List<Subscribe> subscribers = new ArrayList<>();
 
-    @OneToOne
-    @JoinColumn(name = "picture_id")
-    private Picture profilePicture;
+    private String profilePicture;
 
     private String selfBio;
 

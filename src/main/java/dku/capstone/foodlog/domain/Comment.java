@@ -20,7 +20,7 @@ public class Comment extends BaseTime{
     private Post post;
 
     @ManyToOne
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     private String text;

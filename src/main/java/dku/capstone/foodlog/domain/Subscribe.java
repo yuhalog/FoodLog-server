@@ -20,6 +20,6 @@ public class Subscribe {
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "subscribe")
     private Member subscriber;
 }

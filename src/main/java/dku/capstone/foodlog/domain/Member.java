@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.domain;
 
+import dku.capstone.foodlog.constant.Gender;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

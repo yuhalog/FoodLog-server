@@ -1,5 +1,7 @@
 package dku.capstone.foodlog.domain;
 
+import dku.capstone.foodlog.constant.FoodPurpose;
+import dku.capstone.foodlog.constant.FoodType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

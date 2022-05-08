@@ -1,4 +1,4 @@
-package dku.capstone.foodlog.domain;
+package dku.capstone.foodlog.constant;
 
 public enum FoodType {
     KOREAN,

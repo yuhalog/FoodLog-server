@@ -15,7 +15,4 @@ public class Picture extends BaseTime{
     @JoinColumn(name = "post_id")
     private Post post;
 
-    @OneToOne(mappedBy = "profilePicture")
-    private Member member;
-
 }

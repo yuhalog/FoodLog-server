@@ -91,7 +91,7 @@ public class GoogleUtils {
         String GOOGLE_USERINFO_REQUEST_URL="https://www.googleapis.com/oauth2/v1/userinfo";
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization","Bearer "+googleOAuthToken.getAccess_token());
+        headers.add("Authorization","Bearer "+googleOAuthToken.getAccessToken());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity(headers);
         ResponseEntity<String> response=restTemplate.exchange(GOOGLE_USERINFO_REQUEST_URL, HttpMethod.GET,request,String.class);

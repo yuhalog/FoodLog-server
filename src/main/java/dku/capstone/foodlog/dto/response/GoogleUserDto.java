@@ -10,8 +10,4 @@ public class GoogleUserDto {
     private String id;
     private String email;
     private String name;
-    private String givenName;
-    private String familyName;
-    private String picture;
-    private String locale;
 }

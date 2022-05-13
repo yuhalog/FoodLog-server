@@ -45,4 +45,7 @@ public class OAuthService {
         return member.getId();
     }
 
+    public Member findOneByEmail(String email) {
+        return memberRepository.findByEmail(email);
+    }
 }

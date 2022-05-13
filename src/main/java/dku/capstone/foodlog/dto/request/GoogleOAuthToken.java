@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 import lombok.Getter;
 
@@ -7,9 +8,17 @@ import lombok.Getter;
 @Data
 public class GoogleOAuthToken {
 
-    private String access_token;
-    private String expires_in;
+    @JsonProperty("access_token")
+    private String accessToken;
+
+    @JsonProperty("expires_in")
+    private String expiresIn;
+
     private String scope;
-    private String token_type;
-    private String id_token;
+
+    @JsonProperty("token_type")
+    private String tokenType;
+
+    @JsonProperty("id_token")
+    private String idToken;
 }

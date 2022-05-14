@@ -51,4 +51,11 @@ public class Member extends BaseTime{
         this.selfBio = selfBio;
     }
 
+    public void createMemberProfile(String username, Gender gender, Date birthday, String profilePicture, String selfBio) {
+        this.username = username;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.profilePicture = profilePicture;
+        this.selfBio = selfBio;
+    }
 }

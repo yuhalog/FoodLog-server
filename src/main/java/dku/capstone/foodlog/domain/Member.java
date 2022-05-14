@@ -38,4 +38,7 @@ public class Member extends BaseTime{
 
     private String selfBio;
 
+    public Member(String email) {
+        this.email = email;
+    }
 }

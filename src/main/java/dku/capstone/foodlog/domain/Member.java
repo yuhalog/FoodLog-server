@@ -2,6 +2,7 @@ package dku.capstone.foodlog.domain;
 
 import dku.capstone.foodlog.constant.Gender;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -38,7 +39,16 @@ public class Member extends BaseTime{
 
     private String selfBio;
 
-    public Member(String email) {
+
+    @Builder
+    public Member(Long id, String email, String username, Gender gender, Date birthday, String profilePicture, String selfBio) {
+        this.id = id;
         this.email = email;
+        this.username = username;
+        this.gender = gender;
+        this.birthday = birthday;
+        this.profilePicture = profilePicture;
+        this.selfBio = selfBio;
     }
+
 }

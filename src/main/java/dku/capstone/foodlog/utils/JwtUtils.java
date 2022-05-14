@@ -29,4 +29,30 @@ public class JwtUtils {
                 .signWith(SignatureAlgorithm.HS512, secretKey)
                 .compact();
     }
+
+
+    public String getJwtByHeader() {
+        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
+                .getRequest();
+        return request.getHeader("ACCESS-TOKEN");
+    }
+
+    public Claims gwtJwt() {
+        String accessToken = getJwtByHeader();
+        if(accessToken == null || accessToken.length() == 0) {
+            throw new JwtException("invalid");
+        }
+
+        Jws<Claims> claims;
+
+        try{
+            claims = Jwts.parser()
+                    .setSigningKey(secretKey)
+                    .parseClaimsJws(accessToken);
+        } catch (Exception ignored) {
+            throw new JwtException("invalid!");
+        }
+
+        return claims.getBody();
+    }
 }

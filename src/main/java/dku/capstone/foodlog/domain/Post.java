@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -44,5 +45,19 @@ public class Post extends BaseTime{
 
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
+
+    @Builder
+    public Post(Member member, List<PostPicture> pictureList, Float rating,
+                String review, FoodType type, FoodPurpose purpose, Place place, Date date ){
+        this.id = Long.parseLong(UUID.randomUUID().toString());
+        this.member = member;
+        this.pictureList = pictureList;
+        this.rating = rating;
+        this.review = review;
+        this.type = type;
+        this.purpose = purpose;
+        this.place = place;
+        this.date = date;
+    }
 
 }

@@ -2,9 +2,7 @@ package dku.capstone.foodlog.domain;
 
 import dku.capstone.foodlog.constant.FoodPurpose;
 import dku.capstone.foodlog.constant.FoodType;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -14,6 +12,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@ToString
 public class Post extends BaseTime{
 
     @Id @GeneratedValue

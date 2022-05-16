@@ -1,37 +1,28 @@
 package dku.capstone.foodlog.dto.request;
 
 import dku.capstone.foodlog.constant.Gender;
-import dku.capstone.foodlog.domain.Member;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.time.LocalDate;
 
 @Data
+@NoArgsConstructor
 public class CreateMemberProfileRequest {
 
     private String username;
     private Gender gender;
-    private Date birthday;
+    private LocalDate birthday;
     private String profilePicture;
     private String selfBio;
 
     @Builder
-    public CreateMemberProfileRequest(String username, Gender gender, Date birthday, String profilePicture, String selfBio) {
+    public CreateMemberProfileRequest(String username, Gender gender, LocalDate birthday, String profilePicture, String selfBio) {
         this.username = username;
         this.gender = gender;
         this.birthday = birthday;
         this.profilePicture = profilePicture;
         this.selfBio = selfBio;
-    }
-
-    public Member toMemberEntity() {
-        return Member.builder()
-                .username(username)
-                .gender(gender)
-                .birthday(birthday)
-                .profilePicture(profilePicture)
-                .selfBio(selfBio)
-                .build();
     }
 }

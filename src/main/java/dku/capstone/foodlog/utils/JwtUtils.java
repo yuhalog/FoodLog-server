@@ -17,6 +17,11 @@ public class JwtUtils {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
+    /**
+     * 토큰 발급
+     * @param memberId
+     * @return String
+     */
     public String createJwtToken(Long memberId) {
         Date now = new Date();
         Date expiryDate = Date.from(Instant.now().plus(1, ChronoUnit.DAYS));
@@ -30,16 +35,22 @@ public class JwtUtils {
                 .compact();
     }
 
-
+    /**
+     * 헤더에서 토큰값 가져오기
+     * @return Jwt
+     */
     public String getJwtByHeader() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes())
                 .getRequest();
         return request.getHeader("ACCESS-TOKEN");
     }
 
-    public Claims gwtJwt() {
-        String accessToken = getJwtByHeader();
-        if(accessToken == null || accessToken.length() == 0) {
+    /**
+     * 토큰에서 정보 가져오기
+     * @return
+     */
+    public Claims getClaimByJwt(String token) {
+        if(token == null || token.length() == 0) {
             throw new JwtException("invalid");
         }
 
@@ -48,11 +59,20 @@ public class JwtUtils {
         try{
             claims = Jwts.parser()
                     .setSigningKey(secretKey)
-                    .parseClaimsJws(accessToken);
+                    .parseClaimsJws(token);
         } catch (Exception ignored) {
             throw new JwtException("invalid!");
         }
 
         return claims.getBody();
+    }
+
+    /**
+     * jwt 만료 여부
+     * @param token
+     * @return
+     */
+    public Boolean isJwtExpired(String token) {
+        return getClaimByJwt(token).getExpiration().before(new Date());
     }
 }

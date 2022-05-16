@@ -9,8 +9,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -39,8 +39,7 @@ class MemberServiceTest {
         Gender gender = Gender.FEMALE;
 
         String birthdayString = "19990930";
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        Date birthday = dateFormat.parse(birthdayString);
+        LocalDate birthday = LocalDate.parse("19990930", DateTimeFormatter.ofPattern("yyyyMMdd"));
 
         String profilePicture = "http://test.jpg";
 

@@ -20,7 +20,7 @@ public class PlacePost extends BaseTime{
     @JoinColumn(name = "place_id")
     private Place place;
 
-    private int count;
+    private int post_count;
 
     private Float average_rating;
 

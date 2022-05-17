@@ -24,5 +24,5 @@ public class Comment extends BaseTime{
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String text;
+    private String content;
 }

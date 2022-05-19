@@ -1,6 +1,6 @@
 package dku.capstone.foodlog.api;
 
-import dku.capstone.foodlog.dto.request.CreateMemberProfileRequest;
+import dku.capstone.foodlog.dto.request.SaveOrUpdateProfileRequest;
 import dku.capstone.foodlog.dto.response.CreateMemberProfileResponse;
 import dku.capstone.foodlog.service.JwtService;
 import dku.capstone.foodlog.service.MemberService;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.NoSuchElementException;
 
 @Slf4j
+@RequestMapping("/api/profile")
 @RequiredArgsConstructor
 @RestController
 public class MemberApiController {
@@ -21,11 +22,11 @@ public class MemberApiController {
     private final MemberService memberService;
     private final JwtService jwtService;
 
-    @ApiOperation(value = "", notes = "프로필 생성")
-    @PostMapping("/api/member/create/{id}")
+    @ApiOperation(value = "", notes = "프로필 생성 및 수정")
+    @PostMapping("/create/{id}")
     public ResponseEntity<CreateMemberProfileResponse> createMemberProfile(
             @PathVariable("id") Long memberId,
-            @RequestBody CreateMemberProfileRequest request) {
+            @RequestBody SaveOrUpdateProfileRequest request) {
 
         CreateMemberProfileResponse response = null;
 
@@ -36,11 +37,7 @@ public class MemberApiController {
                 return ResponseEntity.notFound().build();
             }
 
-            Long createMemberId = memberService.createMemberProfile(memberId, request);
-
-            response = CreateMemberProfileResponse.builder()
-                    .id(createMemberId)
-                    .build();
+            memberService.saveOrUpdateProfile(memberId, request);
 
         } catch (NoSuchElementException e) {
             log.info("");
@@ -50,5 +47,4 @@ public class MemberApiController {
 
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 }

@@ -53,4 +53,12 @@ public class MemberApiController {
     public boolean isUsernameDuplicate(@RequestBody String username) {
         return memberService.isUsernameDuplicate(username);
     }
+
+    @ApiOperation(value = "", notes = "프로필 조회")
+    @PostMapping("/profile/{id}")
+    public ResponseEntity<?> getMemberProfile(@PathVariable("id") Long memberId){
+        return new ResponseEntity<>(memberService.getProfile(memberId), HttpStatus.OK);
+    }
+
+
 }

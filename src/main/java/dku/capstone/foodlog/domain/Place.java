@@ -13,7 +13,8 @@ import java.util.List;
 @Entity
 public class Place {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_id")
     private Long id;
 

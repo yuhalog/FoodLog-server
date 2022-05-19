@@ -23,7 +23,7 @@ public class MemberApiController {
     private final JwtService jwtService;
 
     @ApiOperation(value = "", notes = "프로필 생성 및 수정")
-    @PostMapping("/create/{id}")
+    @PostMapping("/update/{id}")
     public ResponseEntity<CreateMemberProfileResponse> createMemberProfile(
             @PathVariable("id") Long memberId,
             @RequestBody SaveOrUpdateProfileRequest request) {
@@ -46,5 +46,11 @@ public class MemberApiController {
         }
 
         return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "", notes = "username 중복 체크")
+    @PostMapping("/check/username")
+    public boolean isUsernameDuplicate(@RequestBody String username) {
+        return memberService.isUsernameDuplicate(username);
     }
 }

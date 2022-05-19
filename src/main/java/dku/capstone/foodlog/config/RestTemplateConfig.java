@@ -1,4 +1,4 @@
-용package dku.capstone.foodlog.config;
+package dku.capstone.foodlog.config;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;

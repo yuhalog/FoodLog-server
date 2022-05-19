@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Entity
 public class Comment extends BaseTime{
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
     private Long id;
 
@@ -23,5 +24,5 @@ public class Comment extends BaseTime{
     @JoinColumn(name = "member_id")
     private Member member;
 
-    private String text;
+    private String content;
 }

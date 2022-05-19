@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Entity
 public class PlacePost extends BaseTime{
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_post_id")
     private Long id;
 
@@ -19,7 +20,7 @@ public class PlacePost extends BaseTime{
     @JoinColumn(name = "place_id")
     private Place place;
 
-    private int count;
+    private int post_count;
 
     private Float average_rating;
 

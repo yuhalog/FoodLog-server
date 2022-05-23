@@ -21,4 +21,8 @@ public class PostPicture extends BaseTime{
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public void updatePostPicture(String pictureUrl){
+        this.pictureUrl = pictureUrl;
+    }
+
 }

@@ -24,8 +24,10 @@ public class Member extends BaseTime{
     @Column(name = "member_id")
     private Long id;
 
+    @Column(unique = true)
     private String username;
 
+    @Column(unique = true)
     private String email;
 
     @Enumerated(EnumType.STRING)

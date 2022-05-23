@@ -2,7 +2,6 @@ package dku.capstone.foodlog.api;
 
 import dku.capstone.foodlog.dto.request.SaveOrUpdateProfileRequest;
 import dku.capstone.foodlog.dto.response.CreateMemberProfileResponse;
-import dku.capstone.foodlog.service.JwtService;
 import dku.capstone.foodlog.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -20,32 +19,27 @@ import java.util.NoSuchElementException;
 public class MemberApiController {
 
     private final MemberService memberService;
-    private final JwtService jwtService;
 
     @ApiOperation(value = "", notes = "프로필 생성 및 수정")
     @PostMapping("/update/{id}")
-    public ResponseEntity<CreateMemberProfileResponse> createMemberProfile(
+    public ResponseEntity<?> createMemberProfile(
             @PathVariable("id") Long memberId,
             @RequestBody SaveOrUpdateProfileRequest request) {
+
 
         CreateMemberProfileResponse response = null;
 
         try {
 
-            Long memberIdByJwt = jwtService.getIdByJwt();
-            if (memberIdByJwt != memberId) {
-                return ResponseEntity.notFound().build();
-            }
-
-            memberService.saveOrUpdateProfile(memberId, request);
+            memberService.updateProfile(memberId, request);
 
         } catch (NoSuchElementException e) {
-            log.info("");
+            log.error(e.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
 
-        return new ResponseEntity<>(response, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @ApiOperation(value = "", notes = "username 중복 체크")
@@ -55,10 +49,8 @@ public class MemberApiController {
     }
 
     @ApiOperation(value = "", notes = "프로필 조회")
-    @PostMapping("/profile/{id}")
+    @PostMapping("/{id}")
     public ResponseEntity<?> getMemberProfile(@PathVariable("id") Long memberId){
         return new ResponseEntity<>(memberService.getProfile(memberId), HttpStatus.OK);
     }
-
-
 }

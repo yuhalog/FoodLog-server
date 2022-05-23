@@ -32,7 +32,7 @@ public class MemberService {
      * 프로필 등록 및 수정
      */
     @Transactional
-    public void saveOrUpdateProfile(Long memberId, SaveOrUpdateProfileRequest request) {
+    public Long updateProfile(Long memberId, SaveOrUpdateProfileRequest request) throws Exception {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
@@ -40,6 +40,9 @@ public class MemberService {
         if (!isUsernameDuplicate(member.getUsername())) {
             member.saveOrUpdateProfile(request.getUsername(), request.getGender(), request.getBirthday(),
                     request.getProfilePicture(), request.getSelfBio());
+            return member.getId();
+        } else {
+            throw new Exception("중복 확인을 해주세요!");
         }
     }
 
@@ -48,7 +51,6 @@ public class MemberService {
      */
     public boolean isUsernameDuplicate(String username){
         Member member = memberRepository.findByUsername(username);
-
         if (member!=null) {
             return false;
         }

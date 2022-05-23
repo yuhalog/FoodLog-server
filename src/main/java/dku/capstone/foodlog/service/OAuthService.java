@@ -3,8 +3,10 @@ package dku.capstone.foodlog.service;
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.GoogleOAuthToken;
 import dku.capstone.foodlog.dto.response.GoogleUserDto;
+import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.utils.GoogleUtils;
+import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,13 +21,14 @@ import java.io.IOException;
 public class OAuthService {
 
     private final GoogleUtils googleUtils;
-    private final HttpServletResponse response;
+    private final JwtUtils jwtUtils;
+    private final HttpServletResponse httpServletResponse;
     private final MemberRepository memberRepository;
 
     public void request() throws IOException {
 
         String redirectURL = googleUtils.googleRedirectUrl();
-        response.sendRedirect(redirectURL);
+        httpServletResponse.sendRedirect(redirectURL);
     }
 
 
@@ -39,13 +42,41 @@ public class OAuthService {
         return googleUserDto;
     }
 
-    @Transactional
-    public Long join(Member member) {
-        memberRepository.save(member);
-        return member.getId();
+    public LoginResponse loginByGoogle(String email) {
+
+        Member findMemberByEmail = memberRepository.findByEmail(email);
+
+        if (findMemberByEmail != null) {
+            return login(findMemberByEmail);
+        }
+        return join(email);
     }
 
-    public Member findOneByEmail(String email) {
-        return memberRepository.findByEmail(email);
+    @Transactional
+    public LoginResponse join(String email) {
+        Member findMemberByEmail = memberRepository.findByEmail(email);
+
+        try {
+            if (findMemberByEmail == null) {
+                Member member = Member.builder()
+                        .email(email)
+                        .build();
+
+                memberRepository.save(member);
+                String token = jwtUtils.createToken(email, member.getId());
+
+                return new LoginResponse(member.getId(), token, false);
+            }
+        } catch (Exception e) {
+            throw e;
+        }
+        return null;
+    }
+
+    public LoginResponse login(Member member) {
+        Long memberId = member.getId();
+        String token = jwtUtils.createToken(member.getEmail(), memberId);
+
+        return new LoginResponse(memberId, token, true);
     }
 }

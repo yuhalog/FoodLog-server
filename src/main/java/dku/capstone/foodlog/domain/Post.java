@@ -47,8 +47,14 @@ public class Post extends BaseTime{
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
-    public Post(Member member, List<PostPicture> pictureList, Float rating,
-                String review, FoodType type, FoodPurpose purpose, Place place, Date date ){
+    public Post(Member member,
+                List<PostPicture> pictureList,
+                Float rating,
+                String review,
+                FoodType type,
+                FoodPurpose purpose,
+                Place place,
+                Date date ){
         this.id = Long.parseLong(UUID.randomUUID().toString());
         this.member = member;
         this.pictureList = pictureList;

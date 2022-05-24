@@ -11,14 +11,13 @@ import org.springframework.web.bind.annotation.*;
 
 
 @Slf4j
-@RestController
+@RestController("post")
 public class PostController {
 
     @Autowired
     PostService postService;
 
-    @ResponseBody
-    @PostMapping("/post/new")
+    @PostMapping("/new")
     public PostFormDto newPost(@RequestBody PostFormDto postFormDto){
 
         Post post = Post.builder()
@@ -33,7 +32,7 @@ public class PostController {
                 .build()
                 ;
 
-        postService.savePost(post);
+        postService.createPost(post);
 
         log.info("pictureList={}, rating={}, review={}, type={}, purpose={}, place={}, date={}",
                 postFormDto.getPictureList(),
@@ -46,17 +45,17 @@ public class PostController {
 
         return postFormDto;
     }
-    @GetMapping("/post/{postId}")
-    public String seePost(@RequestBody PostFormDto postFormDto){
+    @GetMapping("/{postId}")
+    public String seePost(@PathVariable String postId){
         return "ok";
     }
 
-    @PatchMapping("/post/{postId}/edit")
+    @PatchMapping("/{postId}/edit")
     public String editPost(@RequestBody PostFormDto postFormDto){
         return "ok";
     }
 
-    @DeleteMapping("/post/{postId}/delete")
+    @DeleteMapping("/{postId}/delete")
     public String deletePost(@RequestBody PostFormDto postFormDto){
         return "ok";
     }

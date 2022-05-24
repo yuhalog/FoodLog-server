@@ -13,7 +13,6 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@ToString
 public class Post extends BaseTime{
 
     @Id @GeneratedValue
@@ -65,4 +64,7 @@ public class Post extends BaseTime{
         this.date = date;
     }
 
+    public void setReview(String review) {
+        this.review = review;
+    }
 }

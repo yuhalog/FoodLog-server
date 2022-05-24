@@ -14,7 +14,7 @@ import java.util.List;
 @Getter
 public class PostFormDto {
 
-    private String username;
+    private Long memberId;
 
     private List<String> pictureList;
 

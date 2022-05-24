@@ -17,30 +17,32 @@ public class PostController {
     @Autowired
     PostService postService;
 
+    @ResponseBody
     @PostMapping("/post/new")
     public PostFormDto newPost(@RequestBody PostFormDto postFormDto){
 
         Post post = Post.builder()
                 .member(null) //.member(memberRepository.findByUsername(postFormDto.getUsername()))
-                .pictureList(postFormDto.getPictureList())
+                .pictureList(null)
+                .rating(postFormDto.getRating())
                 .review(postFormDto.getReview())
                 .type(postFormDto.getType())
                 .purpose(postFormDto.getPurpose())
-                .place(postFormDto.getPlace())
-                .date(postFormDto.getDate())
+                .place(null)
+                .date(null)
                 .build()
                 ;
 
         postService.savePost(post);
 
-        log.info("rating={}, review={}, type={}, purpose={}",
-                //postFormDto.getPictureList(),
+        log.info("pictureList={}, rating={}, review={}, type={}, purpose={}, place={}, date={}",
+                postFormDto.getPictureList(),
                 postFormDto.getRating(),
                 postFormDto.getReview(),
                 postFormDto.getType(),
-                postFormDto.getPurpose());
-                //postFormDto.getPlace(),
-                //postFormDto.getDate());
+                postFormDto.getPurpose(),
+                postFormDto.getPlace(),
+                postFormDto.getDate());
 
         return postFormDto;
     }

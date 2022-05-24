@@ -55,7 +55,6 @@ public class Post extends BaseTime{
                 FoodPurpose purpose,
                 Place place,
                 Date date ){
-        this.id = Long.parseLong(UUID.randomUUID().toString());
         this.member = member;
         this.pictureList = pictureList;
         this.rating = rating;

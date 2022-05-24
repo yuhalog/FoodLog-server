@@ -16,7 +16,7 @@ public class PostFormDto {
 
     private String username;
 
-    private List<PostPicture> pictureList;
+    private List<String> pictureList;
 
     private Float rating;
 
@@ -26,7 +26,7 @@ public class PostFormDto {
 
     private FoodPurpose purpose;
 
-    private Place place;
+    private String place;
 
-    private Date date;
+    private String date;
 }

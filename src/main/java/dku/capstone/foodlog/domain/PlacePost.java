@@ -23,4 +23,5 @@ public class PlacePost extends BaseTime{
 
     private Float average_rating;
 
+    //TODO post 생성될때마다 별점 계산(더하기 / 빼기)
 }

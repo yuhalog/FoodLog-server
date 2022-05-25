@@ -25,19 +25,7 @@ public class PostController {
     @PostMapping("/post/new")
     public PostFormDto newPost(@RequestBody PostFormDto postFormDto){
 
-        Post post = Post.builder()
-                .member(null) //.member(memberRepository.findById(postFormDto.getMemberId()))
-                .pictureList(null)
-                .rating(postFormDto.getRating())
-                .review(postFormDto.getReview())
-                .type(postFormDto.getType())
-                .purpose(postFormDto.getPurpose())
-                .place(null)
-                .date(null)
-                .build()
-                ;
-
-        postService.createPost(post);
+        postService.createPost(postFormDto);
 
         log.info("pictureList={}, rating={}, review={}, type={}, purpose={}, place={}, date={}",
                 postFormDto.getPictureList(),

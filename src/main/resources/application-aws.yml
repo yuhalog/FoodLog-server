@@ -1,0 +1,11 @@
+cloud:
+  aws:
+    s3:
+      bucket: foodlogstorage
+    credentials:
+      access-key: AKIA2KMNSMDY6VKXLWXT
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false

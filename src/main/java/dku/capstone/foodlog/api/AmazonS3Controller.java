@@ -1,2 +1,9 @@
-package dku.capstone.foodlog.api;public class AmazonS3Controller {
+package dku.capstone.foodlog.api;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequiredArgsConstructor
+public class AmazonS3Controller {
 }

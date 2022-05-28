@@ -5,8 +5,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,9 +19,6 @@ public class Place {
     private Double latitude;
 
     private Double longitude;
-
-    @OneToMany(mappedBy = "place")
-    private List<Post> postList = new ArrayList<>();
 
     @OneToOne(mappedBy = "place")
     private PlacePost placePost;

@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.service;
 
+import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.request.PostFormDto;
 import dku.capstone.foodlog.dto.request.PostReviewOnly;
@@ -23,6 +24,10 @@ public class PostService {
 
         //place 생성 -> post 생성
         //client에서 위도, 경도 정보 가져옴
+        Place place = Place.builder()
+                .latitude(postFormDto.getLocation().get(0))
+                .longitude(postFormDto.getLocation().get(1))
+                .build();
         //place - 위도, 경도 정보 -> retuen placeid
         //post의 place에 placeid 저장
 

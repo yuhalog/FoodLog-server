@@ -33,7 +33,7 @@ public class PostController {
                 postFormDto.getReview(),
                 postFormDto.getType(),
                 postFormDto.getPurpose(),
-                postFormDto.getPlace(),
+                postFormDto.getLocation(),
                 postFormDto.getDate());
 
         return postFormDto;

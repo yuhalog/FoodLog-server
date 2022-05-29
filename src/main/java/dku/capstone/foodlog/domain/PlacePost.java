@@ -5,13 +5,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class PlacePost extends BaseTime{
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "place_post_id")
     private Long id;
 
@@ -19,7 +22,10 @@ public class PlacePost extends BaseTime{
     @JoinColumn(name = "place_id")
     private Place place;
 
-    private int count;
+    @OneToMany(mappedBy = "placePost")
+    private List<Post> postList = new ArrayList<>();
+
+    private int post_count;
 
     private Float average_rating;
 

@@ -11,7 +11,8 @@ import javax.persistence.*;
 @Entity
 public class Subscribe {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "subscribe_id")
     private Long id;
 

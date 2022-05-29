@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,11 @@ public class Place {
 
     @OneToOne(mappedBy = "place")
     private PlacePost placePost;
+
+    @Builder
+    public Place(Double latitude,
+                 Double longitude){
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

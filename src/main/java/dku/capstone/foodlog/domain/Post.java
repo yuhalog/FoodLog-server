@@ -15,7 +15,8 @@ import java.util.UUID;
 @Entity
 public class Post extends BaseTime{
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_id")
     private Long id;
 
@@ -37,8 +38,8 @@ public class Post extends BaseTime{
     private FoodPurpose purpose;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_id")
-    private Place place;
+    @JoinColumn(name = "place_post_id")
+    private PlacePost placePost;
 
     private Date date;
 

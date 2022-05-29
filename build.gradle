@@ -21,6 +21,7 @@ repositories {
 
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     annotationProcessor 'org.projectlombok:lombok'
@@ -29,7 +30,8 @@ dependencies {
 
     // Spring Boot JPA
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.mariadb.jdbc:mariadb-java-client'
+//    implementation 'org.mariadb.jdbc:mariadb-java-client'
+
 
     // H2 Database
     implementation 'com.h2database:h2'
@@ -37,6 +39,11 @@ dependencies {
     // AWS
     implementation 'org.springframework.cloud:spring-cloud-starter-aws'
 
+
+    // Swagger
+    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
 }
 
 

@@ -5,6 +5,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -16,10 +18,18 @@ public class Place {
     @Column(name = "place_id")
     private Long id;
 
+    @OneToMany(mappedBy = "place")
+    private List<Post> postList = new ArrayList<>();
+
     private Double latitude;
 
     private Double longitude;
 
-    @OneToOne(mappedBy = "place")
-    private PlacePost placePost;
+    private String name;
+
+    private String Address;
+
+    private int post_count;
+
+    private Float average_rating;
 }

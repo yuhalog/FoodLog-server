@@ -39,8 +39,8 @@ public class Post extends BaseTime{
     private FoodPurpose purpose;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "place_post_id")
-    private PlacePost placePost;
+    @JoinColumn(name = "place_id")
+    private Place place;
 
     private Date date;
 

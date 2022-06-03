@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,7 +23,8 @@ public class PostPicture extends BaseTime{
     @JoinColumn(name = "post_id")
     private Post post;
 
-    public void updatePostPicture(String pictureUrl){
+    @Builder
+    public PostPicture(String pictureUrl){
         this.pictureUrl = pictureUrl;
     }
 

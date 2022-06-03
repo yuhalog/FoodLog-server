@@ -16,7 +16,7 @@ public class PostFormDto {
 
     private Long memberId;
 
-    private List<String> pictureList;
+    //private List<String> pictureList;
 
     private Float rating;
 
@@ -27,7 +27,7 @@ public class PostFormDto {
     private FoodPurpose purpose;
 
     //place의 위도, 경도 정보
-    private List<Double> location;
+    //private List<Double> location;
 
     private String date;
 }

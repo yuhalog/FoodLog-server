@@ -1,7 +1,12 @@
 package dku.capstone.foodlog.api;
 
+import dku.capstone.foodlog.dto.response.ApiResponse;
 import dku.capstone.foodlog.service.AwsS3Service;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -10,6 +15,8 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/s3")
+@Slf4j
 public class AmazonS3Controller {
     private final AwsS3Service awsS3Service;
 

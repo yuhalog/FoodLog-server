@@ -44,6 +44,8 @@ public class PlaceService {
                 .id(place.getId())
                 .name(place.getName())
                 .address(place.getAddress())
+                .latitude(place.getLatitude())
+                .longitude(place.getLongitude())
                 .rating(place.getAverage_rating())
                 .pictureReviews(pictureReviews)
                 .build();

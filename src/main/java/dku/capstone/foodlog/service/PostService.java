@@ -59,7 +59,7 @@ public class PostService {
                 .review(postFormDto.getReview())
                 .type(postFormDto.getType())
                 .purpose(postFormDto.getPurpose())
-                .placePost(null)
+                .place(null)
                 .date(null)
                 .build()
                 ;

@@ -53,7 +53,7 @@ public class Post extends BaseTime{
                 String review,
                 FoodType type,
                 FoodPurpose purpose,
-                PlacePost placePost,
+                Place place,
                 Date date ){
         this.member = member;
         this.pictureList = pictureList;
@@ -61,7 +61,7 @@ public class Post extends BaseTime{
         this.review = review;
         this.type = type;
         this.purpose = purpose;
-        this.placePost = placePost;
+        this.place = place;
         this.date = date;
     }
 

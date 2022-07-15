@@ -1,9 +1,12 @@
 package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.Member;
+import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.SaveOrUpdateProfileRequest;
+import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.dto.response.MemberDto;
 import dku.capstone.foodlog.repository.MemberRepository;
+import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +19,42 @@ import java.util.NoSuchElementException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final JwtUtils jwtUtils;
+
+    /**
+     * 회원가입
+     */
+    @Transactional
+    public LoginResponse join(LoginRequest request) {
+        String email = request.getEmail();
+
+        Member member = Member.builder()
+                .email(email)
+                .build();
+
+        memberRepository.save(member);
+        String token = jwtUtils.createToken(email, member.getId());
+
+        return new LoginResponse(member.getId(), token, false);
+    }
+
+    /**
+     * 로그인
+     */
+    public LoginResponse login(LoginRequest request) {
+        String email = request.getEmail();
+        Member member = memberRepository.findByEmail(email);
+
+        if (member == null) {
+            return join(request);
+        }
+        else {
+            Long memberId = member.getId();
+            String token = jwtUtils.createToken(member.getEmail(), memberId);
+
+            return new LoginResponse(memberId, token, true);
+        }
+    }
 
     /**
      * 프로필 설정 - 조회

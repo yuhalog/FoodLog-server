@@ -6,8 +6,12 @@ build/
 !**/src/test/**/build/
 
 application.yml
+application-test.properties
+application-test.yml
+application-aws.yml
 application-oauth.yml
 application-dev.yml
+
 
 ### STS ###
 .apt_generated

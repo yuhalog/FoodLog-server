@@ -8,14 +8,12 @@ import dku.capstone.foodlog.dto.response.MemberDto;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 
-@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -79,8 +77,7 @@ public class MemberService {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
-
-        if (!isUsernameDuplicate(member.getUsername())) {
+        if ((member.getUsername().equals(request.getUsername())) || (!isUsernameDuplicate(member.getUsername()))) {
             member.updateProfile(request);
             return member.getId();
         } else {
@@ -93,7 +90,7 @@ public class MemberService {
      */
     public boolean isUsernameDuplicate(String username){
         List<Member> member = memberRepository.findAllByUsername(username);
-        if (!member.isEmpty()) {
+        if (member.isEmpty()) {
             return false;
         }
         return true;

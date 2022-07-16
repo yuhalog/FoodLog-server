@@ -27,7 +27,7 @@ public class Post extends BaseTime{
     @OneToMany(mappedBy = "post")
     private List<PostPicture> pictureList = new ArrayList<>();
 
-    private Integer rating;
+    private int rating;
 
     private String review;
 

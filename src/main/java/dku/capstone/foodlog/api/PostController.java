@@ -3,14 +3,14 @@ package dku.capstone.foodlog.api;
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.request.PostFormDto;
 import dku.capstone.foodlog.dto.request.PostReviewOnly;
-import dku.capstone.foodlog.dto.response.ApiResponse;
+import dku.capstone.foodlog.dto.response.CursorResult;
 import dku.capstone.foodlog.repository.PostRepository;
 import dku.capstone.foodlog.service.AwsS3Service;
 import dku.capstone.foodlog.service.PostService;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +21,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/post")
 public class PostController {
+
+    private static final int DEFAULT_SIZE = 10;
 
     @Autowired
     PostService postService;
@@ -37,13 +39,15 @@ public class PostController {
         List<String> pictureImgList = awsS3Service.uploadImage(multipartFile);
         Post post = postService.createPost(postFormDto, pictureImgList);
 
-        log.info("rating={}, review={}, type={}, purpose={}, date={}",
-                //postFormDto.getPictureList(),
+
+        log.info("member={}, pictureList={}, rating={}, review={}, type={}, purpose={}, Location={}, date={}",
+                postFormDto.getMemberId(),
+                post.getPictureList().get(0).getPictureUrl(),
                 postFormDto.getRating(),
                 postFormDto.getReview(),
                 postFormDto.getType(),
                 postFormDto.getPurpose(),
-                //postFormDto.getLocation(),
+                postFormDto.getLocation().toString(),
                 postFormDto.getDate());
 
         return postFormDto;
@@ -55,16 +59,24 @@ public class PostController {
         return "ok";
     }
 
-    @PatchMapping("/post/{postId}/edit")
+    @PatchMapping("/{postId}/edit")
     public String editPost(@PathVariable Long postId, @RequestBody PostReviewOnly postReviewOnly) {
         postService.editPost(postReviewOnly, postId);
         return "ok";
 
     }
 
-    @DeleteMapping("/post/{postId}/delete")
+    @DeleteMapping("/{postId}/delete")
     public String deletePost(@PathVariable Long postId){
         postService.deletePost(postId);
         return "ok";
     }
+
+    @GetMapping
+    public CursorResult<Post> getPosts(Long cursorId, Integer size) {
+        if (size == null) size = DEFAULT_SIZE;
+        return this.postService.get(cursorId, PageRequest.of(0, size));
+    }
+
 }
+

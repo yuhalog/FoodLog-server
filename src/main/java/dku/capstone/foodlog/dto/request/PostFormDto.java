@@ -6,19 +6,21 @@ import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.PostPicture;
 import lombok.Getter;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 @Getter
+@ToString
 public class PostFormDto {
 
     private Long memberId;
 
     //private List<String> pictureList;
 
-    private Float rating;
+    private Integer rating;
 
     private String review;
 
@@ -27,7 +29,7 @@ public class PostFormDto {
     private FoodPurpose purpose;
 
     //place의 위도, 경도 정보
-    //private List<Double> location;
+    private List<Double> location;
 
     private String date;
 }

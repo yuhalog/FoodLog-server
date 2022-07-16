@@ -5,16 +5,19 @@ import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.domain.PostPicture;
 import dku.capstone.foodlog.dto.request.PostFormDto;
 import dku.capstone.foodlog.dto.request.PostReviewOnly;
+import dku.capstone.foodlog.dto.response.CursorResult;
+import dku.capstone.foodlog.repository.MemberRepository;
+import dku.capstone.foodlog.repository.PlaceRepository;
 import dku.capstone.foodlog.repository.PostPictureRepository;
 import dku.capstone.foodlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -23,23 +26,42 @@ import java.util.Optional;
 public class PostService {
     private final PostRepository postRepository;
     private final PostPictureRepository postPictureRepository;
+    private final MemberRepository memberRepository;
+    private final PlaceRepository placeRepository;
 
     //create post
     public Post createPost(PostFormDto postFormDto, List<String> pictureImgList){
 
-        //place 생성 -> post 생성
         //client에서 위도, 경도 정보 가져옴
-        /*Place place = Place.builder()
+        //해당 위치의 place가 DB에 있는지 확인
+        /*
+        Place place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLocation().get(0), postFormDto.getLocation().get(1));
+        if (place == null){
+            place = Place.builder()
+                    .latitude(postFormDto.getLocation().get(0))
+                    .longitude(postFormDto.getLocation().get(1))
+                    .post_count(0)
+                    .average_rating(0.0F)
+                    .sum_rating(0.0F)
+                    .build();
+        }*/
+
+        /*Member member = memberRepository.findById(postFormDto.getMemberId())
+                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));*/
+
+
+        Place place = Place.builder()
                 .latitude(postFormDto.getLocation().get(0))
                 .longitude(postFormDto.getLocation().get(1))
-                .build();*/
-        //place - 위도, 경도 정보 -> retuen placeid
-        //post의 place에 placeid 저장
+                .post_count(0)
+                .average_rating(0.0F)
+                .sum_rating(0.0F)
+                .build();
 
-        //Member member = memberRepository.findById(postFormDto.getMemberId())
-
-
-        //TODO postPlace 별점 계산 로직
+        placeRepository.save(place);
+        //postPlace 별점 계산 로직
+        place.plusCountPost();
+        place.calAverageRating(postFormDto.getRating());
 
         //picture을 리스트 형태로 처리 & 저장
         List<PostPicture> postPictureList = new ArrayList<>();
@@ -59,10 +81,14 @@ public class PostService {
                 .review(postFormDto.getReview())
                 .type(postFormDto.getType())
                 .purpose(postFormDto.getPurpose())
-                .place(null)
+                .place(place)
                 .date(null)
                 .build()
                 ;
+
+        //place의 post List에 post를 추가
+        place.getPostList().add(post);
+        placeRepository.save(place);
 
         return postRepository.save(post);
     }
@@ -86,7 +112,39 @@ public class PostService {
 
     //delete post
     public void deletePost(Long postId){
-        //TODO postPlace 계산
+        //Place 계산
+        Post post = postRepository.findById(postId).get();
+
+        //post의 place를 찾음
+        Double latitude = post.getPlace().getLatitude();
+        Double longitude = post.getPlace().getLongitude();
+        Place place = placeRepository.findByLatitudeAndLongitude(latitude, longitude);
+
+        //place의 post List에서 해당 post를 삭제 & 별점 계산
+        place.getPostList().remove(post);
+        place.minusCountPost();
+        place.calAverageRating(post.getRating());
+
         postRepository.deleteById(postId);
+    }
+
+
+    public CursorResult<Post> get(Long cursorId, Pageable page) {
+        final List<Post> posts = getPosts(cursorId, page);
+        final Long lastIdOfList = posts.isEmpty() ?
+                null : posts.get(posts.size() - 1).getId();
+
+        return new CursorResult<>(posts, hasNext(lastIdOfList));
+    }
+
+    private List<Post> getPosts(Long id, Pageable page) {
+        return id == null ?
+                this.postRepository.findAllByOrderByIdDesc(page) :
+                this.postRepository.findByIdLessThanOrderByIdDesc(id, page);
+    }
+
+    private Boolean hasNext(Long id) {
+        if (id == null) return false;
+        return this.postRepository.existsByIdLessThan(id);
     }
 }

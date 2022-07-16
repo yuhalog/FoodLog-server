@@ -1,4 +1,4 @@
-package dku.capstone.foodlog.dto.request;
+package dku.capstone.foodlog.dto.response;
 
 import dku.capstone.foodlog.constant.Gender;
 import lombok.AllArgsConstructor;
@@ -10,11 +10,10 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class SaveOrUpdateProfileRequest {
+public class MemberProfileDto {
 
     private String username;
     private Gender gender;
     private LocalDate birthday;
-    private String profilePicture;
     private String selfBio;
 }

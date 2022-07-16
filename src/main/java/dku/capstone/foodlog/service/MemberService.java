@@ -2,17 +2,20 @@ package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
-import dku.capstone.foodlog.dto.request.SaveOrUpdateProfileRequest;
+import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.dto.response.MemberDto;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -44,7 +47,6 @@ public class MemberService {
     public LoginResponse login(LoginRequest request) {
         String email = request.getEmail();
         Member member = memberRepository.findByEmail(email);
-
         if (member == null) {
             return join(request);
         }
@@ -56,6 +58,7 @@ public class MemberService {
         }
     }
 
+    // TODO 프로필 사진 따로 분리해서 구현
     /**
      * 프로필 설정 - 조회
      */
@@ -67,18 +70,18 @@ public class MemberService {
         return new MemberDto(findMember);
     }
 
+    // TODO 프로필 사진 따로 분리해서 구현
     /**
      * 프로필 등록 및 수정
      */
     @Transactional
-    public Long updateProfile(Long memberId, SaveOrUpdateProfileRequest request) throws Exception {
+    public Long updateProfile(Long memberId, MemberProfileDto request) throws Exception {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
 
         if (!isUsernameDuplicate(member.getUsername())) {
-            member.saveOrUpdateProfile(request.getUsername(), request.getGender(), request.getBirthday(),
-                    request.getProfilePicture(), request.getSelfBio());
+            member.updateProfile(request);
             return member.getId();
         } else {
             throw new Exception("중복 확인을 해주세요!");
@@ -89,8 +92,8 @@ public class MemberService {
      * username 중복 체크
      */
     public boolean isUsernameDuplicate(String username){
-        Member member = memberRepository.findByUsername(username);
-        if (member!=null) {
+        List<Member> member = memberRepository.findAllByUsername(username);
+        if (!member.isEmpty()) {
             return false;
         }
         return true;

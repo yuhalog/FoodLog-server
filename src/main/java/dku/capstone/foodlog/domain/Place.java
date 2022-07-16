@@ -18,13 +18,18 @@ public class Place {
     @Column(name = "place_id")
     private Long id;
 
+    @OneToMany(mappedBy = "place")
+    private List<Post> postList = new ArrayList<>();
+
     private Double latitude;
 
     private Double longitude;
 
-    @OneToMany(mappedBy = "place")
-    private List<Post> postList = new ArrayList<>();
+    private String name;
 
-    @OneToOne(mappedBy = "place")
-    private PlacePost placePost;
+    private String Address;
+
+    private int post_count;
+
+    private Float average_rating;
 }

@@ -1,9 +1,7 @@
 package dku.capstone.foodlog.api;
 
-import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
-import dku.capstone.foodlog.dto.request.SaveOrUpdateProfileRequest;
-import dku.capstone.foodlog.dto.response.CreateMemberProfileResponse;
+import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.service.MemberService;
 import io.swagger.annotations.ApiOperation;
@@ -35,28 +33,24 @@ public class MemberApiController {
     @PostMapping("/profile/{id}")
     public ResponseEntity<?> createMemberProfile(
             @PathVariable("id") Long memberId,
-            @RequestBody SaveOrUpdateProfileRequest request) {
-
-
-        CreateMemberProfileResponse response = null;
+            @RequestBody MemberProfileDto request) {
+        Long response = null;
 
         try {
-
-            memberService.updateProfile(memberId, request);
-
+            response = memberService.updateProfile(memberId, request);
         } catch (NoSuchElementException e) {
             log.error(e.getMessage());
         } catch (Exception e) {
             log.error(e.getMessage());
         }
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @ApiOperation(value = "", notes = "username 중복 체크")
     @PostMapping("/check/username")
-    public boolean isUsernameDuplicate(@RequestBody String username) {
-        return memberService.isUsernameDuplicate(username);
+    public ResponseEntity<?> isUsernameDuplicate(@RequestBody String username) {
+        return new ResponseEntity<>(memberService.isUsernameDuplicate(username), HttpStatus.OK);
     }
 
     @ApiOperation(value = "", notes = "프로필 조회")

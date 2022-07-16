@@ -15,7 +15,7 @@ public class JwtUtils {
     @Value("${jwt.secret-key}")
     private String secretKey;
 
-    private long validTime = 1000L * 60 * 30;
+    private Long validTime = 1000L * 60 * 180;
 
     /**
      * 토큰 발급

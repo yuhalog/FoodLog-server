@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.NoSuchElementException;
 
@@ -33,10 +34,17 @@ public class MemberApiController {
     @PostMapping("/profile/{id}")
     public ResponseEntity<?> createMemberProfile(
             @PathVariable("id") Long memberId,
-            @RequestBody MemberProfileDto request) {
+            @RequestPart(value = "profileDto") MemberProfileDto request,
+            @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {
         Long response = null;
 
+
         try {
+            if (multipartFile!=null) {
+                String pictureUrl = memberService.uploadProfilePicture(memberId, multipartFile);
+                request.setProfilePicture(pictureUrl);
+            }
+
             response = memberService.updateProfile(memberId, request);
         } catch (NoSuchElementException e) {
             log.error(e.getMessage());

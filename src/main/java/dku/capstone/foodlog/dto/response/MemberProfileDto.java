@@ -16,4 +16,5 @@ public class MemberProfileDto {
     private Gender gender;
     private LocalDate birthday;
     private String selfBio;
+    private String profilePicture;
 }

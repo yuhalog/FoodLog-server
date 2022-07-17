@@ -64,5 +64,6 @@ public class Member extends BaseTime{
         this.gender = request.getGender();
         this.birthday = request.getBirthday();
         this.selfBio = request.getSelfBio();
+        this.profilePicture = request.getProfilePicture();
     }
 }

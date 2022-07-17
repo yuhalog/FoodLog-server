@@ -10,7 +10,9 @@ import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -21,6 +23,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final JwtUtils jwtUtils;
+    private final AwsS3Service awsS3Service;
 
     /**
      * 회원가입
@@ -56,7 +59,6 @@ public class MemberService {
         }
     }
 
-    // TODO 프로필 사진 따로 분리해서 구현
     /**
      * 프로필 설정 - 조회
      */
@@ -68,7 +70,6 @@ public class MemberService {
         return new MemberDto(findMember);
     }
 
-    // TODO 프로필 사진 따로 분리해서 구현
     /**
      * 프로필 등록 및 수정
      */
@@ -77,7 +78,7 @@ public class MemberService {
 
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
-        if ((member.getUsername().equals(request.getUsername())) || (!isUsernameDuplicate(member.getUsername()))) {
+        if ((member.getUsername().equals(request.getUsername())) || (!isUsernameDuplicate(request.getUsername()))) {
             member.updateProfile(request);
             return member.getId();
         } else {
@@ -94,5 +95,24 @@ public class MemberService {
             return false;
         }
         return true;
+    }
+
+    /**
+     * 프로필 사진 등록
+     */
+    public String uploadProfilePicture(Long memberId, MultipartFile multipartFile) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+
+        if (member.getProfilePicture()!=null) {
+            String pictureUrl = member.getProfilePicture();
+            String pictureName = pictureUrl.substring(55);
+            awsS3Service.deleteImage(pictureName);
+        }
+        List<MultipartFile> picture = new ArrayList<>();
+        picture.add(multipartFile);
+        List<String> pictureUrl = awsS3Service.uploadImage(picture);
+
+        return pictureUrl.get(0);
     }
 }

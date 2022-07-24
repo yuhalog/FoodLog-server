@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.service;
 
+import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.domain.PostPicture;
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -29,68 +31,77 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PlaceRepository placeRepository;
 
-    //create post
-    public Post createPost(PostFormDto postFormDto, List<String> pictureImgList){
-
-        //client에서 위도, 경도 정보 가져옴
+    public Place findPlaceBySavePost(PostFormDto postFormDto) {
+        Place place = null;
         //해당 위치의 place가 DB에 있는지 확인
-        /*
-        Place place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLocation().get(0), postFormDto.getLocation().get(1));
-        if (place == null){
+        try {
+            place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLatitude(), postFormDto.getLongitude());
+
+            place.plusCountPost();
+            place.calAverageRating(postFormDto.getRating());
+
+        } catch (Exception e) {
             place = Place.builder()
-                    .latitude(postFormDto.getLocation().get(0))
-                    .longitude(postFormDto.getLocation().get(1))
-                    .post_count(0)
-                    .average_rating(0.0F)
-                    .sum_rating(0.0F)
+                    .name(postFormDto.getPlaceName())
+                    .address(postFormDto.getPlaceAddress())
+                    .latitude(postFormDto.getLatitude())
+                    .longitude(postFormDto.getLongitude())
+                    .postCount(1)
+                    .averageRating((float) postFormDto.getRating())
+                    .sumRating((float) postFormDto.getRating())
                     .build();
-        }*/
 
-        /*Member member = memberRepository.findById(postFormDto.getMemberId())
-                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));*/
+            placeRepository.save(place);
+        }
+        return place;
+    }
 
-
-        Place place = Place.builder()
-                .latitude(postFormDto.getLocation().get(0))
-                .longitude(postFormDto.getLocation().get(1))
-                .post_count(0)
-                .average_rating(0.0F)
-                .sum_rating(0.0F)
-                .build();
-
-        placeRepository.save(place);
-        //postPlace 별점 계산 로직
-        place.plusCountPost();
-        place.calAverageRating(postFormDto.getRating());
-
-        //picture을 리스트 형태로 처리 & 저장
+    public List<PostPicture> savePostPicture(List<String> pictureImgList, Post post){
         List<PostPicture> postPictureList = new ArrayList<>();
 
         for (String pictureImg : pictureImgList) {
             PostPicture postPicture = PostPicture.builder()
                     .pictureUrl(pictureImg)
+                    .post(post)
                     .build();
-            postPictureList.add(postPicture);
+
             postPictureRepository.save(postPicture);
+
+            postPictureList.add(postPicture);
         }
 
+        return postPictureList;
+    }
+    //create post
+    public PostFormDto createPost(PostFormDto postFormDto, List<String> pictureImgList){
+
+        Place place = findPlaceBySavePost(postFormDto);
+
+        Member member = memberRepository.findById(postFormDto.getMemberId())
+                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));
+
+        //picture을 리스트 형태로 처리 & 저장
+
+
         Post post = Post.builder()
-                .member(null)
-                .pictureList(postPictureList)
+                .member(member)
                 .rating(postFormDto.getRating())
                 .review(postFormDto.getReview())
                 .type(postFormDto.getType())
                 .purpose(postFormDto.getPurpose())
                 .place(place)
-                .date(null)
-                .build()
-                ;
+                .build();
+
+        List<PostPicture> postPictureList = savePostPicture(pictureImgList, post);
 
         //place의 post List에 post를 추가
-        place.getPostList().add(post);
-        placeRepository.save(place);
+//        place.getPostList().add(post);
+        postRepository.save(post);
 
-        return postRepository.save(post);
+        PostFormDto newPost = new PostFormDto(post, pictureImgList);
+
+        return newPost;
+
     }
 
     //see post

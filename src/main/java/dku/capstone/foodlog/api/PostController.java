@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -30,23 +32,13 @@ public class PostController {
 
     @ApiOperation(value = "", notes = "게시물 생성")
     @PostMapping("/new")
-    public PostFormDto newPost(@RequestPart PostFormDto postFormDto, @RequestPart List<MultipartFile> multipartFile){
+    public ResponseEntity<?> newPost(@RequestPart(value = "postFormDto") PostFormDto postFormDto,
+                                  @RequestPart(value = "postPictureFile", required = false) List<MultipartFile> multipartFile){
 
         List<String> pictureImgList = awsS3Service.uploadImage(multipartFile);
-        Post post = postService.createPost(postFormDto, pictureImgList);
+        PostFormDto newPost = postService.createPost(postFormDto, pictureImgList);
 
-
-        log.info("member={}, pictureList={}, rating={}, review={}, type={}, purpose={}, Location={}, date={}",
-                postFormDto.getMemberId(),
-                post.getPictureList().get(0).getPictureUrl(),
-                postFormDto.getRating(),
-                postFormDto.getReview(),
-                postFormDto.getType(),
-                postFormDto.getPurpose(),
-                postFormDto.getLocation().toString(),
-                postFormDto.getDate());
-
-        return postFormDto;
+        return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
     @GetMapping("/{postId}")

@@ -8,8 +8,8 @@ build/
 application.yml
 application-test.properties
 application-test.yml
+application-local.yml
 application-aws.yml
-application-oauth.yml
 application-dev.yml
 
 

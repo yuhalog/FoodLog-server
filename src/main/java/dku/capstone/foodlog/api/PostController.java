@@ -32,8 +32,8 @@ public class PostController {
 
     @ApiOperation(value = "", notes = "게시물 생성")
     @PostMapping("/new")
-    public ResponseEntity<?> newPost(@RequestPart(value = "postFormDto") PostFormDto postFormDto,
-                                  @RequestPart(value = "postPictureFile", required = false) List<MultipartFile> multipartFile){
+    public ResponseEntity<PostFormDto> newPost(@RequestPart(value = "postFormDto") PostFormDto postFormDto,
+                                  @RequestPart(value = "postPictureFile") List<MultipartFile> multipartFile){
 
         List<String> pictureImgList = awsS3Service.uploadImage(multipartFile);
         PostFormDto newPost = postService.createPost(postFormDto, pictureImgList);
@@ -42,15 +42,15 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public String seePost(@PathVariable Long postId){
-        Post post = postService.seePost(postId);
-        return "ok";
+    public ResponseEntity<PostFormDto> seePost(@PathVariable Long postId){
+        PostFormDto postFormDto = postService.getPost(postId);
+        return new ResponseEntity<>(postFormDto, HttpStatus.OK);
     }
 
     @PutMapping("/{postId}")
-    public String editPost(@PathVariable Long postId, @RequestBody PostReviewOnly postReviewOnly) {
-        postService.editPost(postReviewOnly, postId);
-        return "ok";
+    public ResponseEntity<String> updatePost(@PathVariable("postId") Long postId, @RequestBody PostReviewOnly postReviewOnly) {
+        String review = postService.updatePostReview(postReviewOnly, postId);
+        return new ResponseEntity<>(review, HttpStatus.OK);
 
     }
 

@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -69,9 +68,9 @@ public class PostService {
 
             postPictureList.add(postPicture);
         }
-
         return postPictureList;
     }
+
     //create post
     public PostFormDto createPost(PostFormDto postFormDto, List<String> pictureImgList){
 
@@ -79,9 +78,6 @@ public class PostService {
 
         Member member = memberRepository.findById(postFormDto.getMemberId())
                 .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));
-
-        //picture을 리스트 형태로 처리 & 저장
-
 
         Post post = Post.builder()
                 .member(member)
@@ -92,11 +88,9 @@ public class PostService {
                 .place(place)
                 .build();
 
-        List<PostPicture> postPictureList = savePostPicture(pictureImgList, post);
-
-        //place의 post List에 post를 추가
-//        place.getPostList().add(post);
         postRepository.save(post);
+
+        savePostPicture(pictureImgList, post);
 
         PostFormDto newPost = new PostFormDto(post, pictureImgList);
 
@@ -105,20 +99,19 @@ public class PostService {
     }
 
     //see post
-    public Post seePost(Long postId){
+    @Transactional(readOnly = true)
+    public PostFormDto getPost(Long postId){
         Post post = postRepository.getById(postId);
-        return post;
+        PostFormDto postFormDto = new PostFormDto(post);
+        return postFormDto;
     }
 
     //edit post
-    public String editPost(PostReviewOnly postReviewOnly, Long postId){
-        Post findPost = postRepository.getById(postId);
-
-        findPost.setReview(postReviewOnly.getReview());
-
-        postRepository.save(findPost);
-
-        return "";
+    public String updatePostReview(PostReviewOnly postReviewOnly, Long postId){
+        Post post = postRepository.getById(postId);
+        post.setReview(postReviewOnly.getReview());
+        String review = postReviewOnly.getReview();
+        return review;
     }
 
     //delete post

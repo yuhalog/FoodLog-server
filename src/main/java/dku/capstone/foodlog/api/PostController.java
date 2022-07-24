@@ -55,14 +55,14 @@ public class PostController {
         return "ok";
     }
 
-    @PostMapping("/{postId}/edit")
+    @PutMapping("/{postId}")
     public String editPost(@PathVariable Long postId, @RequestBody PostReviewOnly postReviewOnly) {
         postService.editPost(postReviewOnly, postId);
         return "ok";
 
     }
 
-    @DeleteMapping("/{postId}/delete")
+    @DeleteMapping("/{postId}")
     public String deletePost(@PathVariable Long postId){
         postService.deletePost(postId);
         return "ok";

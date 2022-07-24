@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.domain;
 
 import dku.capstone.foodlog.constant.Gender;
+import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,11 +59,11 @@ public class Member extends BaseTime{
         this.selfBio = selfBio;
     }
 
-    public void saveOrUpdateProfile(String username, Gender gender, LocalDate birthday, String profilePicture, String selfBio) {
-        this.username = username;
-        this.gender = gender;
-        this.birthday = birthday;
-        this.profilePicture = profilePicture;
-        this.selfBio = selfBio;
+    public void updateProfile(MemberProfileDto request) {
+        this.username = request.getUsername();
+        this.gender = request.getGender();
+        this.birthday = request.getBirthday();
+        this.selfBio = request.getSelfBio();
+        this.profilePicture = request.getProfilePicture();
     }
 }

@@ -41,20 +41,12 @@ public class Post extends BaseTime{
     @JoinColumn(name = "place_id")
     private Place place;
 
-    private Date date;
-
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
-    public Post(Member member,
-                List<PostPicture> pictureList,
-                Integer rating,
-                String review,
-                FoodType type,
-                FoodPurpose purpose,
-                Place place,
-                Date date ){
+    public Post(Member member, List<PostPicture> pictureList, Integer rating, String review,
+                FoodType type, FoodPurpose purpose, Place place){
         this.member = member;
         this.pictureList = pictureList;
         this.rating = rating;
@@ -62,7 +54,6 @@ public class Post extends BaseTime{
         this.type = type;
         this.purpose = purpose;
         this.place = place;
-        this.date = date;
     }
 
     public void setReview(String review) {

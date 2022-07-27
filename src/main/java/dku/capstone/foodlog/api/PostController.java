@@ -31,7 +31,7 @@ public class PostController {
     private final AwsS3Service awsS3Service;
 
     @ApiOperation(value = "", notes = "게시물 생성")
-    @PostMapping("/new")
+    @PostMapping("")
     public ResponseEntity<PostFormDto> newPost(@RequestPart(value = "postFormDto") PostFormDto postFormDto,
                                   @RequestPart(value = "postPictureFile") List<MultipartFile> multipartFile){
 
@@ -41,12 +41,14 @@ public class PostController {
         return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "", notes = "게시물 단일 조회")
     @GetMapping("/{postId}")
-    public ResponseEntity<PostFormDto> seePost(@PathVariable Long postId){
+    public ResponseEntity<PostFormDto> getPost(@PathVariable Long postId){
         PostFormDto postFormDto = postService.getPost(postId);
         return new ResponseEntity<>(postFormDto, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "", notes = "게시물 수정")
     @PutMapping("/{postId}")
     public ResponseEntity<String> updatePost(@PathVariable("postId") Long postId, @RequestBody PostReviewOnly postReviewOnly) {
         String review = postService.updatePostReview(postReviewOnly, postId);
@@ -54,6 +56,7 @@ public class PostController {
 
     }
 
+    @ApiOperation(value = "", notes = "게시물 삭제")
     @DeleteMapping("/{postId}")
     public String deletePost(@PathVariable Long postId){
         postService.deletePost(postId);

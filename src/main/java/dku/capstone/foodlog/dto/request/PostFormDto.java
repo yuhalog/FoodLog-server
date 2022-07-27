@@ -59,7 +59,7 @@ public class PostFormDto {
         this.placeAddress = post.getPlace().getAddress();
         this.latitude = post.getPlace().getLatitude();
         this.longitude = post.getPlace().getLongitude();
-        this.date = String.valueOf(post.getCreatedDate());
+        this.date = String.valueOf(post.getDate());
     }
 
     public PostFormDto(Post post) {
@@ -72,7 +72,7 @@ public class PostFormDto {
         this.placeAddress = post.getPlace().getAddress();
         this.latitude = post.getPlace().getLatitude();
         this.longitude = post.getPlace().getLongitude();
-        this.date = String.valueOf(post.getCreatedDate());
+        this.date = String.valueOf(post.getDate());
     }
 
 }

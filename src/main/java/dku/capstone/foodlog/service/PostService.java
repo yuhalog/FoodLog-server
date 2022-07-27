@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -86,6 +88,7 @@ public class PostService {
                 .type(postFormDto.getType())
                 .purpose(postFormDto.getPurpose())
                 .place(place)
+                .date(LocalDate.parse(postFormDto.getDate(), DateTimeFormatter.ISO_DATE))
                 .build();
 
         postRepository.save(post);

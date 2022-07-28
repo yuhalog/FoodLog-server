@@ -24,7 +24,8 @@ public class PostPicture extends BaseTime{
     private Post post;
 
     @Builder
-    public PostPicture(String pictureUrl){
+    public PostPicture(String pictureUrl, Post post){
+        this.post = post;
         this.pictureUrl = pictureUrl;
     }
 

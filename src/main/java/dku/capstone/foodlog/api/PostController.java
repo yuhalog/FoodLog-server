@@ -8,15 +8,11 @@ import dku.capstone.foodlog.service.AwsS3Service;
 import dku.capstone.foodlog.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
-import dku.capstone.foodlog.dto.response.PostResponse;
-import dku.capstone.foodlog.repository.PostRepository;
-import dku.capstone.foodlog.service.AwsS3Service;
-import dku.capstone.foodlog.service.PostService;
-import lombok.Getter;
-
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -35,38 +31,32 @@ public class PostController {
     private final AwsS3Service awsS3Service;
 
     @ApiOperation(value = "", notes = "게시물 생성")
-    @PostMapping("/new")
-    public PostFormDto newPost(@RequestPart PostFormDto postFormDto, @RequestPart List<MultipartFile> multipartFile){
+    @PostMapping("")
+    public ResponseEntity<PostFormDto> newPost(@RequestPart(value = "postFormDto") PostFormDto postFormDto,
+                                  @RequestPart(value = "postPictureFile") List<MultipartFile> multipartFile){
 
         List<String> pictureImgList = awsS3Service.uploadImage(multipartFile);
-        Post post = postService.createPost(postFormDto, pictureImgList);
+        PostFormDto newPost = postService.createPost(postFormDto, pictureImgList);
 
-        log.info("member={}, pictureList={}, rating={}, review={}, type={}, purpose={}, Location={}, date={}",
-                postFormDto.getMemberId(),
-                post.getPictureList().get(0).getPictureUrl(),
-                postFormDto.getRating(),
-                postFormDto.getReview(),
-                postFormDto.getType(),
-                postFormDto.getPurpose(),
-                postFormDto.getLocation().toString(),
-                postFormDto.getDate());
-
-        return postFormDto;
+        return new ResponseEntity<>(newPost, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "", notes = "게시물 단일 조회")
     @GetMapping("/{postId}")
-    public PostResponse seePost(@PathVariable Long postId){
-        PostResponse postResponse = postService.seePost(postId);
-        return postResponse;
+    public ResponseEntity<PostFormDto> getPost(@PathVariable Long postId){
+        PostFormDto postFormDto = postService.getPost(postId);
+        return new ResponseEntity<>(postFormDto, HttpStatus.OK);
     }
 
-
+    @ApiOperation(value = "", notes = "게시물 수정")
     @PutMapping("/{postId}")
-    public PostResponse editPost(@PathVariable Long postId, @RequestPart PostReviewOnly postReviewOnly) {
-        PostResponse postResponse = postService.editPost(postReviewOnly, postId);
-        return postResponse;
+    public ResponseEntity<String> updatePost(@PathVariable("postId") Long postId, @RequestBody PostReviewOnly postReviewOnly) {
+        String review = postService.updatePostReview(postReviewOnly, postId);
+        return new ResponseEntity<>(review, HttpStatus.OK);
+
     }
 
+    @ApiOperation(value = "", notes = "게시물 삭제")
     @DeleteMapping("/{postId}")
     public String deletePost(@PathVariable Long postId){
         postService.deletePost(postId);

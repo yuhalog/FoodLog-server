@@ -28,49 +28,43 @@ public class Place {
 
     private String name;
 
-    @Column(name="address")
     private String address;
 
     //postList.size()
-    private Integer post_count;
+    private Integer postCount;
 
-    private Float average_rating;
+    private Float averageRating;
 
-    private Float sum_rating;
+    private Float sumRating;
 
     @Builder
-    public Place(Double latitude,
-                 Double longitude,
-                 String name,
-                 String address,
-                 Integer post_count,
-                 Float average_rating,
-                 Float sum_rating){
+    public Place(String name, String address, Double latitude, Double longitude,
+                 Integer postCount, Float averageRating, Float sumRating){
+        this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
-        this.name = name;
         this.address = address;
-        this.post_count = post_count;
-        this.average_rating = average_rating;
-        this.sum_rating = sum_rating;
+        this.postCount = postCount;
+        this.averageRating = averageRating;
+        this.sumRating = sumRating;
     }
 
     //post의 수를 하나씩 늘리는 메서드
     public int plusCountPost(){
-        this.post_count += 1;
-        return post_count;
+        this.postCount += 1;
+        return postCount;
     }
 
     //post의 수를 하나씩 줄이는 메서드
     public int minusCountPost(){
-        this.post_count -= 1;
-        return post_count;
+        this.postCount -= 1;
+        return postCount;
     }
 
     //별점이 바뀔 때마다 실행되는 메서드 (별점 계산)
     public float calAverageRating(int rating){
-        sum_rating += rating;
-        average_rating = Math.round((sum_rating / (float)post_count) * 10) / (float)10.0;
-        return average_rating;
+        sumRating += rating;
+        averageRating = Math.round((sumRating / (float)postCount) * 10) / (float)10.0;
+        return averageRating;
     }
 }

@@ -1,12 +1,12 @@
 package dku.capstone.foodlog.service;
 
+import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.domain.PostPicture;
 import dku.capstone.foodlog.dto.request.PostFormDto;
 import dku.capstone.foodlog.dto.request.PostReviewOnly;
 import dku.capstone.foodlog.dto.response.CursorResult;
-import dku.capstone.foodlog.dto.response.PostResponse;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.repository.PlaceRepository;
 import dku.capstone.foodlog.repository.PostPictureRepository;
@@ -17,6 +17,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,92 +32,89 @@ public class PostService {
     private final MemberRepository memberRepository;
     private final PlaceRepository placeRepository;
 
-    //create post
-    public Post createPost(PostFormDto postFormDto, List<String> pictureImgList){
-
-        //client에서 위도, 경도 정보 가져옴
+    public Place findPlaceBySavePost(PostFormDto postFormDto) {
+        Place place = null;
         //해당 위치의 place가 DB에 있는지 확인
+        try {
+            place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLatitude(), postFormDto.getLongitude());
 
-        /*Member member = memberRepository.findById(postFormDto.getMemberId())
-                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));*/
+            place.plusCountPost();
+            place.calAverageRating(postFormDto.getRating());
 
-        Place place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLocation().get(0), postFormDto.getLocation().get(1));
-
-        if (place == null){
+        } catch (Exception e) {
             place = Place.builder()
-                    .latitude(postFormDto.getLocation().get(0))
-                    .longitude(postFormDto.getLocation().get(1))
-                    .name(postFormDto.getName())
-                    .address(postFormDto.getAddress())
-                    .post_count(0)
-                    .average_rating(0.0F)
-                    .sum_rating(0.0F)
+                    .name(postFormDto.getPlaceName())
+                    .address(postFormDto.getPlaceAddress())
+                    .latitude(postFormDto.getLatitude())
+                    .longitude(postFormDto.getLongitude())
+                    .postCount(1)
+                    .averageRating((float) postFormDto.getRating())
+                    .sumRating((float) postFormDto.getRating())
                     .build();
+
             placeRepository.save(place);
         }
+        return place;
+    }
 
-        //postPlace 별점 계산 로직
-        place.plusCountPost();
-        place.calAverageRating(postFormDto.getRating());
-
-        //picture을 리스트 형태로 처리 & 저장
+    public List<PostPicture> savePostPicture(List<String> pictureImgList, Post post){
         List<PostPicture> postPictureList = new ArrayList<>();
 
         for (String pictureImg : pictureImgList) {
             PostPicture postPicture = PostPicture.builder()
                     .pictureUrl(pictureImg)
+                    .post(post)
                     .build();
-            postPictureList.add(postPicture);
+
             postPictureRepository.save(postPicture);
+
+            postPictureList.add(postPicture);
         }
+        return postPictureList;
+    }
+
+    //create post
+    public PostFormDto createPost(PostFormDto postFormDto, List<String> pictureImgList){
+
+        Place place = findPlaceBySavePost(postFormDto);
+
+        Member member = memberRepository.findById(postFormDto.getMemberId())
+                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));
 
         Post post = Post.builder()
-                .member(null)
-                .pictureList(postPictureList)
+                .member(member)
                 .rating(postFormDto.getRating())
                 .review(postFormDto.getReview())
                 .type(postFormDto.getType())
                 .purpose(postFormDto.getPurpose())
                 .place(place)
-                .date(null)
-                .build()
-                ;
+                .date(LocalDate.parse(postFormDto.getDate(), DateTimeFormatter.ISO_DATE))
+                .build();
 
-        //place의 post List에 post를 추가
-        place.getPostList().add(post);
-        placeRepository.save(place);
+        postRepository.save(post);
 
-        return postRepository.save(post);
+        savePostPicture(pictureImgList, post);
+
+        PostFormDto newPost = new PostFormDto(post, pictureImgList);
+
+        return newPost;
+
     }
 
     //see post
-    public PostResponse seePost(Long postId){
-        Post post = postRepository.findById(postId).get();
-
-        List<String> pictureList = new ArrayList<>();
-
-        for (PostPicture postPicture: post.getPictureList()) {
-            pictureList.add(postPicture.getPictureUrl());
-        }
-        PostResponse postResponse = new PostResponse(post.getMember(),
-                pictureList,
-                post.getRating(),
-                post.getReview(),
-                post.getType(),
-                post.getPurpose(),
-                post.getPlace().getName(),
-                post.getPlace().getAddress(),
-                "20220729");
-        return postResponse;
+    @Transactional(readOnly = true)
+    public PostFormDto getPost(Long postId){
+        Post post = postRepository.getById(postId);
+        PostFormDto postFormDto = new PostFormDto(post);
+        return postFormDto;
     }
 
     //edit post
-    public PostResponse editPost(PostReviewOnly postReviewOnly, Long postId){
-        Post findPost = postRepository.findById(postId).get();
-        findPost.setReview(postReviewOnly.getReview());
-        postRepository.save(findPost);
-
-        return seePost(postId);
+    public String updatePostReview(PostReviewOnly postReviewOnly, Long postId){
+        Post post = postRepository.getById(postId);
+        post.setReview(postReviewOnly.getReview());
+        String review = postReviewOnly.getReview();
+        return review;
     }
 
     //delete post

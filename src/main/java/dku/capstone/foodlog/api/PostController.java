@@ -8,6 +8,12 @@ import dku.capstone.foodlog.service.AwsS3Service;
 import dku.capstone.foodlog.service.PostService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import dku.capstone.foodlog.dto.response.PostResponse;
+import dku.capstone.foodlog.repository.PostRepository;
+import dku.capstone.foodlog.service.AwsS3Service;
+import dku.capstone.foodlog.service.PostService;
+import lombok.Getter;
+
 import lombok.extern.slf4j.Slf4j;
 
 import org.springframework.data.domain.PageRequest;
@@ -35,7 +41,6 @@ public class PostController {
         List<String> pictureImgList = awsS3Service.uploadImage(multipartFile);
         Post post = postService.createPost(postFormDto, pictureImgList);
 
-
         log.info("member={}, pictureList={}, rating={}, review={}, type={}, purpose={}, Location={}, date={}",
                 postFormDto.getMemberId(),
                 post.getPictureList().get(0).getPictureUrl(),
@@ -50,16 +55,16 @@ public class PostController {
     }
 
     @GetMapping("/{postId}")
-    public String seePost(@PathVariable Long postId){
-        Post post = postService.seePost(postId);
-        return "ok";
+    public PostResponse seePost(@PathVariable Long postId){
+        PostResponse postResponse = postService.seePost(postId);
+        return postResponse;
     }
 
-    @PutMapping("/{postId}")
-    public String editPost(@PathVariable Long postId, @RequestBody PostReviewOnly postReviewOnly) {
-        postService.editPost(postReviewOnly, postId);
-        return "ok";
 
+    @PutMapping("/{postId}")
+    public PostResponse editPost(@PathVariable Long postId, @RequestPart PostReviewOnly postReviewOnly) {
+        PostResponse postResponse = postService.editPost(postReviewOnly, postId);
+        return postResponse;
     }
 
     @DeleteMapping("/{postId}")

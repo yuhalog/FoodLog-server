@@ -41,11 +41,15 @@ public class Place {
     @Builder
     public Place(Double latitude,
                  Double longitude,
+                 String name,
+                 String address,
                  Integer post_count,
                  Float average_rating,
                  Float sum_rating){
         this.latitude = latitude;
         this.longitude = longitude;
+        this.name = name;
+        this.address = address;
         this.post_count = post_count;
         this.average_rating = average_rating;
         this.sum_rating = sum_rating;

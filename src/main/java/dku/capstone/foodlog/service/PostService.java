@@ -6,6 +6,7 @@ import dku.capstone.foodlog.domain.PostPicture;
 import dku.capstone.foodlog.dto.request.PostFormDto;
 import dku.capstone.foodlog.dto.request.PostReviewOnly;
 import dku.capstone.foodlog.dto.response.CursorResult;
+import dku.capstone.foodlog.dto.response.PostResponse;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.repository.PlaceRepository;
 import dku.capstone.foodlog.repository.PostPictureRepository;
@@ -34,31 +35,25 @@ public class PostService {
 
         //client에서 위도, 경도 정보 가져옴
         //해당 위치의 place가 DB에 있는지 확인
-        /*
-        Place place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLocation().get(0), postFormDto.getLocation().get(1));
-        if (place == null){
-            place = Place.builder()
-                    .latitude(postFormDto.getLocation().get(0))
-                    .longitude(postFormDto.getLocation().get(1))
-                    .post_count(0)
-                    .average_rating(0.0F)
-                    .sum_rating(0.0F)
-                    .build();
-        }*/
 
         /*Member member = memberRepository.findById(postFormDto.getMemberId())
                 .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));*/
 
+        Place place = placeRepository.findByLatitudeAndLongitude(postFormDto.getLocation().get(0), postFormDto.getLocation().get(1));
 
-        Place place = Place.builder()
-                .latitude(postFormDto.getLocation().get(0))
-                .longitude(postFormDto.getLocation().get(1))
-                .post_count(0)
-                .average_rating(0.0F)
-                .sum_rating(0.0F)
-                .build();
+        if (place == null){
+            place = Place.builder()
+                    .latitude(postFormDto.getLocation().get(0))
+                    .longitude(postFormDto.getLocation().get(1))
+                    .name(postFormDto.getName())
+                    .address(postFormDto.getAddress())
+                    .post_count(0)
+                    .average_rating(0.0F)
+                    .sum_rating(0.0F)
+                    .build();
+            placeRepository.save(place);
+        }
 
-        placeRepository.save(place);
         //postPlace 별점 계산 로직
         place.plusCountPost();
         place.calAverageRating(postFormDto.getRating());
@@ -94,20 +89,33 @@ public class PostService {
     }
 
     //see post
-    public Post seePost(Long postId){
-        Post post = postRepository.getById(postId);
-        return post;
+    public PostResponse seePost(Long postId){
+        Post post = postRepository.findById(postId).get();
+
+        List<String> pictureList = new ArrayList<>();
+
+        for (PostPicture postPicture: post.getPictureList()) {
+            pictureList.add(postPicture.getPictureUrl());
+        }
+        PostResponse postResponse = new PostResponse(post.getMember(),
+                pictureList,
+                post.getRating(),
+                post.getReview(),
+                post.getType(),
+                post.getPurpose(),
+                post.getPlace().getName(),
+                post.getPlace().getAddress(),
+                "20220729");
+        return postResponse;
     }
 
     //edit post
-    public String editPost(PostReviewOnly postReviewOnly, Long postId){
-        Post findPost = postRepository.getById(postId);
-
+    public PostResponse editPost(PostReviewOnly postReviewOnly, Long postId){
+        Post findPost = postRepository.findById(postId).get();
         findPost.setReview(postReviewOnly.getReview());
-
         postRepository.save(findPost);
 
-        return "";
+        return seePost(postId);
     }
 
     //delete post

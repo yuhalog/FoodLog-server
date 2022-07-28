@@ -5,10 +5,9 @@ import dku.capstone.foodlog.constant.FoodType;
 import lombok.*;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -37,32 +36,26 @@ public class Post extends BaseTime{
     @Enumerated(EnumType.STRING)
     private FoodPurpose purpose;
 
+    private LocalDate date;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
-
-    private Date date;
 
     @OneToMany(mappedBy = "post")
     private List<Comment> commentList = new ArrayList<>();
 
     @Builder
-    public Post(Member member,
-                List<PostPicture> pictureList,
-                Integer rating,
-                String review,
-                FoodType type,
-                FoodPurpose purpose,
-                Place place,
-                Date date ){
+    public Post(Member member, List<PostPicture> pictureList, Integer rating, String review,
+                LocalDate date, FoodType type, FoodPurpose purpose, Place place){
         this.member = member;
         this.pictureList = pictureList;
         this.rating = rating;
         this.review = review;
+        this.date = date;
         this.type = type;
         this.purpose = purpose;
         this.place = place;
-        this.date = date;
     }
 
     public void setReview(String review) {

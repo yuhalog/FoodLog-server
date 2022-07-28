@@ -1,6 +1,6 @@
 package dku.capstone.foodlog.api;
 
-import dku.capstone.foodlog.dto.response.PlacePostResponse;
+import dku.capstone.foodlog.dto.response.PlacePostDto;
 import dku.capstone.foodlog.service.PlaceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,9 +16,9 @@ public class PlaceApiController {
     private final PlaceService placeService;
 
     @GetMapping("api/place/{id}")
-    public ResponseEntity<PlacePostResponse> getPlacePost(
+    public ResponseEntity<PlacePostDto> getPlacePost(
             @PathVariable("id") Long placeId) {
-        PlacePostResponse response = placeService.getPlacePost(placeId);
+        PlacePostDto response = placeService.getPlacePost(placeId);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 }

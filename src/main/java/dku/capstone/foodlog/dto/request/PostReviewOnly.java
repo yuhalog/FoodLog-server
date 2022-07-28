@@ -1,10 +1,9 @@
 package dku.capstone.foodlog.dto.request;
 
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 public class PostReviewOnly {
-    private Long id;
 
     private String review;
 }

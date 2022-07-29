@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -25,4 +26,13 @@ public class Comment extends BaseTime{
     private Member member;
 
     private String content;
+
+    @Builder
+    public Comment(Post post,
+                   Member member,
+                   String content){
+        this.post = post;
+        this.member = member;
+        this.content = content;
+    }
 }

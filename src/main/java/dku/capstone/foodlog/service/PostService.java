@@ -98,7 +98,6 @@ public class PostService {
         PostFormDto newPost = new PostFormDto(post, pictureImgList);
 
         return newPost;
-
     }
 
     //see post

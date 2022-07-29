@@ -3,6 +3,7 @@ package dku.capstone.foodlog.dto.response;
 
 import dku.capstone.foodlog.constant.FoodPurpose;
 import dku.capstone.foodlog.constant.FoodType;
+import dku.capstone.foodlog.domain.Comment;
 import dku.capstone.foodlog.domain.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,6 +35,8 @@ public class PostResponse {
 
     private String date;
 
+    private List<Comment> commentList;
+
     public PostResponse(Member member,
                         List<String> pictureList,
                         Integer rating,
@@ -42,7 +45,8 @@ public class PostResponse {
                         FoodPurpose purpose,
                         String name,
                         String address,
-                        String date) {
+                        String date,
+                        List<Comment> commentList) {
         this.member = member;
         this.pictureList = pictureList;
         this.rating = rating;
@@ -52,5 +56,6 @@ public class PostResponse {
         this.name = name;
         this.address = address;
         this.date = date;
+        this.commentList = commentList;
     }
 }

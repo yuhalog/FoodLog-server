@@ -7,9 +7,11 @@ import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.repository.SubscribeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
 
+@Transactional
 @RequiredArgsConstructor
 @Service
 public class SubscribeService {
@@ -20,12 +22,9 @@ public class SubscribeService {
     /**
      * 구독
      */
-    public Long subscribe(SubscribeRequest request) {
-        Long memberId = request.getMemberId();
+    public Long subscribe(SubscribeRequest request, Member member) {
         Long subscribeId = request.getSubscribeId();
 
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
         Member subscriber = memberRepository.findById(subscribeId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
 
@@ -39,5 +38,18 @@ public class SubscribeService {
         return saveSubscribe.getId();
     }
 
-    // TODO : 구독 취소, 구독 리스트 조회
+    /**
+     * 구독 취소
+     */
+    public Long deleteSubscribe(SubscribeRequest request, Member member) {
+        Member subscriber = memberRepository.findById(request.getSubscribeId())
+                .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+
+        Subscribe subscribe = subscribeRepository.findByMemberAndSubscriber(member, subscriber);
+
+        subscribeRepository.delete(subscribe);
+        member.getSubscribers().remove(subscribe);
+
+        return subscribe.getId();
+    }
 }

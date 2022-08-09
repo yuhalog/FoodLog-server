@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.api;
 
 import dku.capstone.foodlog.dto.request.LoginRequest;
+import dku.capstone.foodlog.dto.request.MemberJoinRequest;
 import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.service.MemberService;
@@ -30,17 +31,31 @@ public class MemberApiController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "", notes = "프로필 생성 및 수정")
-    @PostMapping("/profile/{id}")
+    @ApiOperation(value = "", notes = "회원가입")
+    @PostMapping("/join")
+    public ResponseEntity<LoginResponse> join(
+            @RequestPart(value = "memberJoinDto") MemberJoinRequest request,
+            @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {
+
+        if (multipartFile != null) {
+            String pictureUrl = memberService.createProfilePicture(multipartFile);
+            request.setProfilePicture(pictureUrl);
+        }
+        LoginResponse response = memberService.join(request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "", notes = "프로필 수정")
+    @PutMapping("/profile/{id}")
     public ResponseEntity<?> createMemberProfile(
             @PathVariable("id") Long memberId,
             @RequestPart(value = "profileDto") MemberProfileDto request,
             @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {
         Long response = null;
 
-
         try {
-            if (multipartFile!=null) {
+            if (multipartFile != null) {
                 String pictureUrl = memberService.uploadProfilePicture(memberId, multipartFile);
                 request.setProfilePicture(pictureUrl);
             }

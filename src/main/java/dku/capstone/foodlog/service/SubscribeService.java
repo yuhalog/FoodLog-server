@@ -3,7 +3,7 @@ package dku.capstone.foodlog.service;
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Subscribe;
 import dku.capstone.foodlog.dto.request.SubscribeRequest;
-import dku.capstone.foodlog.dto.response.SubscribeListResponse;
+import dku.capstone.foodlog.dto.response.MemberPageResponse;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.repository.SubscribeRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +21,12 @@ public class SubscribeService {
 
     private final MemberRepository memberRepository;
     private final SubscribeRepository subscribeRepository;
+
+    private Member getMemberById(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+        return member;
+    }
 
     /**
      * 구독
@@ -44,25 +50,29 @@ public class SubscribeService {
     /**
      * 구독 취소
      */
-    public Long deleteSubscribe(SubscribeRequest request, Member member) {
+    public void unSubscribe(SubscribeRequest request, Member member) {
         Member subscriber = memberRepository.findById(request.getSubscribeId())
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
 
         Subscribe subscribe = subscribeRepository.findByMemberAndSubscriber(member, subscriber);
 
         subscribeRepository.delete(subscribe);
-        member.getSubscribers().remove(subscribe);
-
-        return subscribe.getId();
+//        member.getSubscribers().remove(subscribe);
     }
 
-    /**
-     * 구독 리스트 조회
-     */
-    public Page<SubscribeListResponse> getSubscribeList (Pageable pageable, Member member) {
-        Page<Subscribe> subscribers = subscribeRepository.findByMember(member, pageable);
-        Page<SubscribeListResponse> subscribeList = subscribers.map(entity -> new SubscribeListResponse(entity));
+    public Page<MemberPageResponse> getFollowerList (Long memberId, Pageable pageable) {
+        Member member = getMemberById(memberId);
+        Page<Subscribe> subscribers = subscribeRepository.findBySubscriber(member, pageable);
+        Page<MemberPageResponse> followerList = subscribers.map(entity -> new MemberPageResponse(entity));
 
-        return subscribeList;
+        return followerList;
+    }
+
+    public Page<MemberPageResponse> getFollowingList (Long memberId, Pageable pageable) {
+        Member member = getMemberById(memberId);
+        Page<Subscribe> subscribers = subscribeRepository.findByMember(member, pageable);
+        Page<MemberPageResponse> followingList = subscribers.map(entity -> new MemberPageResponse(entity));
+
+        return followingList;
     }
 }

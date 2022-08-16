@@ -11,6 +11,5 @@ import lombok.NoArgsConstructor;
 @Data
 public class SubscribeRequest {
 
-    private Long memberId;
     private Long subscribeId;
 }

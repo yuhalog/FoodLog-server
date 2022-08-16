@@ -13,4 +13,7 @@ public interface SubscribeRepository extends JpaRepository<Subscribe, Long> {
     Subscribe findByMemberAndSubscriber(Member member, Member Subscribe);
 
     Page<Subscribe> findByMember(Member member, Pageable pageable);
+
+    Page<Subscribe> findBySubscriber(Member member, Pageable pageable);
+
 }

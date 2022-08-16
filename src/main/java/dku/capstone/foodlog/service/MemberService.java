@@ -2,6 +2,7 @@ package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
+import dku.capstone.foodlog.dto.request.MemberJoinRequest;
 import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.dto.response.MemberDto;
@@ -29,17 +30,31 @@ public class MemberService {
      * 회원가입
      */
     @Transactional
-    public LoginResponse join(LoginRequest request) {
-        String email = request.getEmail();
+    public LoginResponse join(MemberJoinRequest memberJoinRequest) {
+
+        String email = memberJoinRequest.getEmail();
+        String username = memberJoinRequest.getUsername();
+        boolean isUsernameDuplicate = isUsernameDuplicate(username);
+
+        if (isUsernameDuplicate) {
+            throw new IllegalArgumentException("중복된 username 입니다.");
+        }
 
         Member member = Member.builder()
                 .email(email)
+                .username(username)
+                .birthday(memberJoinRequest.getBirthday())
+                .selfBio(memberJoinRequest.getSelfBio())
+                .profilePicture(memberJoinRequest.getProfilePicture())
+                .gender(memberJoinRequest.getGender())
                 .build();
 
         memberRepository.save(member);
-        String token = jwtUtils.createToken(email, member.getId());
+        String accessToken = jwtUtils.createToken(email, member.getId());
 
-        return new LoginResponse(member.getId(), token, false);
+        LoginResponse loginResponse = new LoginResponse(member.getId(), email, accessToken, true);
+
+        return loginResponse;
     }
 
     /**
@@ -49,13 +64,13 @@ public class MemberService {
         String email = request.getEmail();
         Member member = memberRepository.findByEmail(email);
         if (member == null) {
-            return join(request);
+            return new LoginResponse(false);
         }
         else {
             Long memberId = member.getId();
-            String token = jwtUtils.createToken(member.getEmail(), memberId);
+            String accessToken = jwtUtils.createToken(member.getEmail(), memberId);
 
-            return new LoginResponse(memberId, token, true);
+            return new LoginResponse(memberId, email, accessToken, true);
         }
     }
 
@@ -71,7 +86,7 @@ public class MemberService {
     }
 
     /**
-     * 프로필 등록 및 수정
+     * 프로필 수정
      */
     @Transactional
     public Long updateProfile(Long memberId, MemberProfileDto request) throws Exception {
@@ -100,7 +115,18 @@ public class MemberService {
     /**
      * 프로필 사진 등록
      */
-    public String uploadProfilePicture(Long memberId, MultipartFile multipartFile) {
+    public String createProfilePicture(MultipartFile multipartFile) {
+        List<MultipartFile> picture = new ArrayList<>();
+        picture.add(multipartFile);
+        List<String> pictureUrl = awsS3Service.uploadImage(picture);
+
+        return pictureUrl.get(0);
+    }
+
+    /**
+     * 프로필 사진 삭제
+     */
+    public void deleteProfilePicture(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
 
@@ -109,10 +135,15 @@ public class MemberService {
             String pictureName = pictureUrl.substring(55);
             awsS3Service.deleteImage(pictureName);
         }
-        List<MultipartFile> picture = new ArrayList<>();
-        picture.add(multipartFile);
-        List<String> pictureUrl = awsS3Service.uploadImage(picture);
+    }
 
-        return pictureUrl.get(0);
+    /**
+     * 프로필 사진 수정
+     */
+    public String uploadProfilePicture(Long memberId, MultipartFile multipartFile) {
+        deleteProfilePicture(memberId);
+        String profilePicture = createProfilePicture(multipartFile);
+
+        return profilePicture;
     }
 }

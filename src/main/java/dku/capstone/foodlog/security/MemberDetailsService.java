@@ -21,6 +21,6 @@ public class MemberDetailsService implements UserDetailsService {
 
         Member member = memberRepository.findByEmail(email);
 
-        return new MemberDetails(member.getEmail());
+        return new MemberDetails(member);
     }
 }

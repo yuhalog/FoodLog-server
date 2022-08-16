@@ -1,22 +1,29 @@
 package dku.capstone.foodlog.security;
 
+import dku.capstone.foodlog.domain.Member;
+import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 
+@Getter
 public class MemberDetails implements UserDetails {
 
-    private String email;
+    private Member member;
 
-    public MemberDetails(String email) {
-        this.email = email;
+    public MemberDetails(Member member) {
+        this.member = member;
     }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.emptyList();
+    }
+
+    public Long getId() {
+        return member.getId();
     }
 
     @Override
@@ -26,7 +33,7 @@ public class MemberDetails implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return member.getEmail();
     }
 
     @Override

@@ -3,12 +3,15 @@ package dku.capstone.foodlog.service;
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;
+import dku.capstone.foodlog.dto.response.MemberPageResponse;
 import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.dto.response.MemberDto;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -145,5 +148,12 @@ public class MemberService {
         String profilePicture = createProfilePicture(multipartFile);
 
         return profilePicture;
+    }
+
+    public Page<MemberPageResponse> getMemberPageByUsername(String username, Pageable pageable) {
+        Page<Member> members = memberRepository.findAllByUsernameContains(username, pageable);
+        Page<MemberPageResponse> memberList = members.map(entity -> new MemberPageResponse(entity));
+
+        return memberList;
     }
 }

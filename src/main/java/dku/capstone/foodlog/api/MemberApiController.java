@@ -2,12 +2,17 @@ package dku.capstone.foodlog.api;
 
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;
+import dku.capstone.foodlog.dto.response.MemberPageResponse;
 import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.service.MemberService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -80,5 +85,13 @@ public class MemberApiController {
     @GetMapping("/profile/{id}")
     public ResponseEntity<?> getMemberProfile(@PathVariable("id") Long memberId){
         return new ResponseEntity<>(memberService.getProfile(memberId), HttpStatus.OK);
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<Page<MemberPageResponse>> getMemberList(
+            @RequestParam String username,
+            @PageableDefault(size=10, sort = "username", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<MemberPageResponse> memberList = memberService.getMemberPageByUsername(username, pageable);
+        return new ResponseEntity<>(memberList, HttpStatus.OK);
     }
 }

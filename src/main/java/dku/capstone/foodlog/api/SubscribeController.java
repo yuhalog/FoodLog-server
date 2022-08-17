@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/subscribe")
+@RequestMapping("/api/subscribe")
 @RestController
 public class SubscribeController {
 

@@ -1,13 +1,12 @@
 package dku.capstone.foodlog.constant;
 
-public enum FoodType {
+public enum FoodCategory {
     KOREAN,
     CHINESE,
     JAPANESE,
     WESTERN,
     ASIAN,
     DESSERT,
-    HAMBURGER,
     SNACK,
     CHICKEN
 }

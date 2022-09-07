@@ -1,7 +1,7 @@
 package dku.capstone.foodlog.domain;
 
+import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
-import dku.capstone.foodlog.constant.FoodType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -31,7 +31,7 @@ public class Post extends BaseTime{
     private String review;
 
     @Enumerated(EnumType.STRING)
-    private FoodType type;
+    private FoodCategory category;
 
     @Enumerated(EnumType.STRING)
     private FoodPurpose purpose;
@@ -47,13 +47,13 @@ public class Post extends BaseTime{
 
     @Builder
     public Post(Member member, List<PostPicture> pictureList, Integer rating, String review,
-                LocalDate date, FoodType type, FoodPurpose purpose, Place place){
+                LocalDate date, FoodCategory category, FoodPurpose purpose, Place place){
         this.member = member;
         this.pictureList = pictureList;
         this.rating = rating;
         this.review = review;
         this.date = date;
-        this.type = type;
+        this.category = category;
         this.purpose = purpose;
         this.place = place;
     }

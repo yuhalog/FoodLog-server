@@ -1,8 +1,8 @@
 package dku.capstone.foodlog.dto.response;
 
 
+import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
-import dku.capstone.foodlog.constant.FoodType;
 import dku.capstone.foodlog.domain.Comment;
 import dku.capstone.foodlog.domain.Member;
 import lombok.Getter;
@@ -23,7 +23,7 @@ public class PostResponse {
 
     private String review;
 
-    private FoodType type;
+    private FoodCategory category;
 
     private FoodPurpose purpose;
 
@@ -41,7 +41,7 @@ public class PostResponse {
                         List<String> pictureList,
                         Integer rating,
                         String review,
-                        FoodType type,
+                        FoodCategory category,
                         FoodPurpose purpose,
                         String name,
                         String address,
@@ -51,7 +51,7 @@ public class PostResponse {
         this.pictureList = pictureList;
         this.rating = rating;
         this.review = review;
-        this.type = type;
+        this.category = category;
         this.purpose = purpose;
         this.name = name;
         this.address = address;

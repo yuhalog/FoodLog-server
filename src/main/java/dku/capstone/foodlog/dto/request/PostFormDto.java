@@ -1,7 +1,7 @@
 package dku.capstone.foodlog.dto.request;
 
+import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
-import dku.capstone.foodlog.constant.FoodType;
 
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.domain.PostPicture;
@@ -25,7 +25,7 @@ public class PostFormDto {
 
     private String review;
 
-    private FoodType type;
+    private FoodCategory category;
 
     private FoodPurpose purpose;
 
@@ -53,7 +53,7 @@ public class PostFormDto {
         this.pictureList = pictureList;
         this.rating = post.getRating();
         this.review = post.getReview();
-        this.type = post.getType();
+        this.category = post.getCategory();
         this.purpose = post.getPurpose();
         this.placeName = post.getPlace().getName();
         this.placeAddress = post.getPlace().getAddress();
@@ -66,7 +66,7 @@ public class PostFormDto {
         this.pictureList = pictureList(post.getPictureList());
         this.rating = post.getRating();
         this.review = post.getReview();
-        this.type = post.getType();
+        this.category = post.getCategory();
         this.purpose = post.getPurpose();
         this.placeName = post.getPlace().getName();
         this.placeAddress = post.getPlace().getAddress();

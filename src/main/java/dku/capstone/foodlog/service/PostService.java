@@ -85,7 +85,7 @@ public class PostService {
                 .member(member)
                 .rating(postFormDto.getRating())
                 .review(postFormDto.getReview())
-                .type(postFormDto.getType())
+                .category(postFormDto.getCategory())
                 .purpose(postFormDto.getPurpose())
                 .place(place)
                 .date(LocalDate.parse(postFormDto.getDate(), DateTimeFormatter.ISO_DATE))

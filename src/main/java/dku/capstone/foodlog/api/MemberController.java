@@ -24,7 +24,7 @@ import java.util.NoSuchElementException;
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
 @RestController
-public class MemberApiController {
+public class MemberController {
 
     private final MemberService memberService;
 

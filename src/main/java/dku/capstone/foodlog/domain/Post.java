@@ -31,9 +31,6 @@ public class Post extends BaseTime{
     private String review;
 
     @Enumerated(EnumType.STRING)
-    private FoodCategory category;
-
-    @Enumerated(EnumType.STRING)
     private FoodPurpose purpose;
 
     private LocalDate date;
@@ -47,13 +44,12 @@ public class Post extends BaseTime{
 
     @Builder
     public Post(Member member, List<PostPicture> pictureList, Integer rating, String review,
-                LocalDate date, FoodCategory category, FoodPurpose purpose, Place place){
+                LocalDate date, FoodPurpose purpose, Place place){
         this.member = member;
         this.pictureList = pictureList;
         this.rating = rating;
         this.review = review;
         this.date = date;
-        this.category = category;
         this.purpose = purpose;
         this.place = place;
     }

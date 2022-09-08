@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
 @RestController
-public class PlaceApiController {
+public class PlaceController {
 
     private final PlaceService placeService;
 

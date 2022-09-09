@@ -20,10 +20,12 @@ public class Place {
     @Column(name = "place_id")
     private Long id;
 
+    private Long kakaoPlaceId;
+
     @OneToMany(mappedBy = "place")
     private List<Post> postList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "placePost")
+    @OneToMany(mappedBy = "place")
     private List<Post> placePostList = new ArrayList<>();
 
     private Double latitude;
@@ -38,11 +40,13 @@ public class Place {
     private FoodCategory category;
 
     @Builder
-    public Place(Double latitude, Double longitude, String name, String address, FoodCategory category) {
+    public Place(Long kakaoPlaceId, Double latitude, Double longitude, String name, String address, FoodCategory category) {
+        this.kakaoPlaceId = kakaoPlaceId;
         this.latitude = latitude;
         this.longitude = longitude;
         this.name = name;
         this.address = address;
         this.category = category;
     }
+
 }

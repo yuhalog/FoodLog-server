@@ -1,21 +1,20 @@
 package dku.capstone.foodlog.dto.response;
 
-
-import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
-import dku.capstone.foodlog.domain.Comment;
-import dku.capstone.foodlog.domain.Member;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import dku.capstone.foodlog.domain.Post;
+import dku.capstone.foodlog.domain.PostPicture;
+import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Getter
-@ToString
+@Builder
 @NoArgsConstructor
+@AllArgsConstructor
+@Data
 public class PostResponse {
-    private Member member;
+
+    private String member;
 
     private List<String> pictureList;
 
@@ -23,39 +22,30 @@ public class PostResponse {
 
     private String review;
 
-    private FoodCategory category;
-
     private FoodPurpose purpose;
-
-    //place의 음식점 이름 정보
-    private String name;
-
-    //place의 음식점 주소 정보
-    private String address;
 
     private String date;
 
-    private List<Comment> commentList;
+    private KakaoPlaceResponse.PlaceInfo placeInfo;
 
-    public PostResponse(Member member,
-                        List<String> pictureList,
-                        Integer rating,
-                        String review,
-                        FoodCategory category,
-                        FoodPurpose purpose,
-                        String name,
-                        String address,
-                        String date,
-                        List<Comment> commentList) {
-        this.member = member;
-        this.pictureList = pictureList;
-        this.rating = rating;
-        this.review = review;
-        this.category = category;
-        this.purpose = purpose;
-        this.name = name;
-        this.address = address;
-        this.date = date;
-        this.commentList = commentList;
+    public List<String> pictureList(List<PostPicture> postPictureList) {
+        List<String> pictureList = new ArrayList<>();
+
+        for (PostPicture postPicture : postPictureList) {
+            pictureList.add(postPicture.getPictureUrl());
+        }
+        return pictureList;
     }
+
+    public PostResponse(Post post, List<String> pictureList) {
+        this.member = post.getMember().getUsername();
+        this.pictureList = pictureList;
+        this.rating = post.getRating();
+        this.review = post.getReview();
+        this.purpose = post.getPurpose();
+        this.date = post.getDate().toString();
+        this.placeInfo = new KakaoPlaceResponse.PlaceInfo(post.getPlace());
+    }
+
+    //    private List<Comment> commentList;
 }

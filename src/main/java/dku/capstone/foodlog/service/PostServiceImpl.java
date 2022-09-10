@@ -2,45 +2,40 @@ package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.*;
 import dku.capstone.foodlog.dto.request.PostRequest;
-import dku.capstone.foodlog.dto.request.PostReviewOnly;
-import dku.capstone.foodlog.dto.response.CursorResult;
 import dku.capstone.foodlog.dto.response.PostResponse;
-import dku.capstone.foodlog.repository.MemberRepository;
-import dku.capstone.foodlog.repository.PlaceRepository;
-import dku.capstone.foodlog.repository.PostPictureRepository;
 import dku.capstone.foodlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Slf4j
 public class PostServiceImpl implements PostService {
+
     private final PostRepository postRepository;
     private final PlaceService placeService;
+    private final PlacePostService placePostService;
     private final PostPictureService postPictureService;
 
+    @Transactional
     public PostResponse createPost(Member member, PostRequest postRequest, List<String> pictureUrlList) {
 
-        Place place = placeService.checkPlaceInDb(postRequest.getKakaoPlace());
+        Place place = placeService.checkPlaceInDb(postRequest.getPlace(), postRequest.getRating());
         Post savedPost = savePost(member, place, postRequest);
         postPictureService.savePostPictureList(pictureUrlList, savedPost);
 
         return new PostResponse(savedPost, pictureUrlList);
     }
 
-    private Post savePost(Member member, Place place, PostRequest postRequest) {
+    @Transactional
+    Post savePost(Member member, Place place, PostRequest postRequest) {
 
         Post newPost = Post.builder()
                 .member(member)
@@ -53,11 +48,6 @@ public class PostServiceImpl implements PostService {
 
         return postRepository.save(newPost);
     }
-
-
-
-
-
 }
 
 //    public Place findPlaceBySavePost(PostFormDto postFormDto) {
@@ -147,13 +137,6 @@ public class PostServiceImpl implements PostService {
 //    }
 //
 //
-//    public CursorResult<Post> get(Long cursorId, Pageable page) {
-//        final List<Post> posts = getPosts(cursorId, page);
-//        final Long lastIdOfList = posts.isEmpty() ?
-//                null : posts.get(posts.size() - 1).getId();
-//
-//        return new CursorResult<>(posts, hasNext(lastIdOfList));
-//    }
 //
 //    private List<Post> getPosts(Long id, Pageable page) {
 //        return id == null ?

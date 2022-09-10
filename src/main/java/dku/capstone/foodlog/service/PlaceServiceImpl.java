@@ -4,6 +4,7 @@ import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.request.KakaoPlaceRequest;
+import dku.capstone.foodlog.dto.request.PlaceRequest;
 import dku.capstone.foodlog.dto.response.PlacePostDto;
 import dku.capstone.foodlog.dto.response.KakaoPlaceResponse;
 import dku.capstone.foodlog.repository.PlaceRepository;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -19,13 +21,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 @Service
 public class PlaceServiceImpl implements PlaceService{
 
     private final PlaceRepository placeRepository;
+    private final PlacePostService placePostService;
 
     private KakaoPlaceResponse kakaoPlaceQueryApi(KakaoPlaceRequest kakaoPlaceRequest) {
 
@@ -43,9 +46,11 @@ public class PlaceServiceImpl implements PlaceService{
 
         UriComponents uriComponents = UriComponentsBuilder
                 .fromHttpUrl(uri)
-//                .queryParam("page", "1")
-//                .queryParam("size", "15")
-                .queryParam("query", "맛집 식당")
+                .queryParam("page", kakaoPlaceRequest.getPage())
+                .queryParam("size", kakaoPlaceRequest.getSize())
+                .queryParam("query", kakaoPlaceRequest.getQuery())
+                .queryParam("x", kakaoPlaceRequest.getLongitude())
+                .queryParam("y", kakaoPlaceRequest.getLatitude())
                 .build();
 
         ResponseEntity<KakaoPlaceResponse> response = restTemplate.exchange(uriComponents.toUriString(), HttpMethod.GET, httpEntity, KakaoPlaceResponse.class);
@@ -55,35 +60,38 @@ public class PlaceServiceImpl implements PlaceService{
         return response.getBody();
     }
 
-    public Place checkPlaceInDb(KakaoPlaceRequest kakaoPlaceRequest) {
-        Place place = placeRepository.findByKakaoPlaceId(Long.parseLong(kakaoPlaceRequest.getId()));
+    @Transactional
+    public Place checkPlaceInDb(PlaceRequest placeRequest, Integer rating) {
+        Place place = placeRepository.findByKakaoPlaceId(Long.parseLong(placeRequest.getKakaoId()));
 
         if (place!=null) {
+            placePostService.setAverageRating(place.getPlacePost());
             return place;
         } else {
-            KakaoPlaceResponse kakaoPlaceResponse = kakaoPlaceQueryApi(kakaoPlaceRequest);
-            FoodCategory foodCategory = parsingCategory(kakaoPlaceResponse.getDocuments().get(0).getCategory());
-            Place newPlace = savePlace(kakaoPlaceResponse.getDocuments().get(0), foodCategory);
+            FoodCategory foodCategory = parsingCategory(placeRequest.getCategory());
+            Place newPlace = savePlace(placeRequest, foodCategory);
+            placePostService.savePlacePost(newPlace, rating);
             return newPlace;
         }
     }
 
-    private FoodCategory parsingCategory(String kakaoCategory) {
-        String category = kakaoCategory.split(" > ")[1];
-        try {
-            return FoodCategory.valueOfFoodCategory(category);
-        } catch (Exception e) {
-            return FoodCategory.ETC;
+    private FoodCategory parsingCategory(String category) {
+        FoodCategory foodCategory = FoodCategory.valueOfFoodCategory(category);
+
+        if (foodCategory!=null) {
+            return foodCategory;
         }
+        return FoodCategory.ETC;
     }
 
-    private Place savePlace(KakaoPlaceResponse.PlaceInfo placeInfo, FoodCategory foodCategory) {
+    @Transactional
+    Place savePlace(PlaceRequest placeRequest, FoodCategory foodCategory) {
         Place place = Place.builder()
-                .name(placeInfo.getName())
-                .address(placeInfo.getAddress())
-                .latitude(Double.parseDouble(placeInfo.getLatitude()))
-                .longitude(Double.parseDouble(placeInfo.getLongitude()))
-                .kakaoPlaceId(Long.parseLong(placeInfo.getId()))
+                .name(placeRequest.getName())
+                .address(placeRequest.getAddress())
+                .latitude(Double.parseDouble(placeRequest.getLatitude()))
+                .longitude(Double.parseDouble(placeRequest.getLongitude()))
+                .kakaoPlaceId(Long.parseLong(placeRequest.getKakaoId()))
                 .category(foodCategory)
                 .build();
 

@@ -25,8 +25,8 @@ public class Place {
     @OneToMany(mappedBy = "place")
     private List<Post> postList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "place")
-    private List<Post> placePostList = new ArrayList<>();
+    @OneToOne(mappedBy = "place")
+    private PlacePost placePost;
 
     private Double latitude;
 

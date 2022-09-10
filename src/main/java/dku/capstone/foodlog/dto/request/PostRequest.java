@@ -21,6 +21,6 @@ public class PostRequest {
 
     private String date;
 
-    private KakaoPlaceRequest kakaoPlace;
+    private PlaceRequest place;
 
 }

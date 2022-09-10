@@ -26,16 +26,7 @@ public class PostResponse {
 
     private String date;
 
-    private KakaoPlaceResponse.PlaceInfo placeInfo;
-
-    public List<String> pictureList(List<PostPicture> postPictureList) {
-        List<String> pictureList = new ArrayList<>();
-
-        for (PostPicture postPicture : postPictureList) {
-            pictureList.add(postPicture.getPictureUrl());
-        }
-        return pictureList;
-    }
+    private PlaceResponse place;
 
     public PostResponse(Post post, List<String> pictureList) {
         this.member = post.getMember().getUsername();
@@ -44,7 +35,7 @@ public class PostResponse {
         this.review = post.getReview();
         this.purpose = post.getPurpose();
         this.date = post.getDate().toString();
-        this.placeInfo = new KakaoPlaceResponse.PlaceInfo(post.getPlace());
+        this.place = new PlaceResponse(post.getPlace());
     }
 
     //    private List<Comment> commentList;

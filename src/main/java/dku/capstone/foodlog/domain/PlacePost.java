@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,22 +17,31 @@ public class PlacePost {
     @Column(name = "place_post_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "place_id")
     private Place place;
 
-    private Integer postCount;
+    private Long postCount;
 
     private Float averageRating;
 
-    //post의 수를 하나씩 늘리는 메서드
-    public int addPostCount(){
+    @Builder
+    public PlacePost(Place place, Long postCount, Float averageRating) {
+        this.place = place;
+        this.postCount = postCount;
+        this.averageRating = averageRating;
+    }
+
+    public void setAverageRating(Float averageRating) {
+        this.averageRating = averageRating;
+    }
+
+    public Long addPostCount(){
         this.postCount += 1;
         return postCount;
     }
 
-    //post의 수를 하나씩 줄이는 메서드
-    public int removePostCount(){
+    public Long removePostCount(){
         this.postCount -= 1;
         return postCount;
     }

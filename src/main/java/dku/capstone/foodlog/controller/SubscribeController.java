@@ -1,4 +1,4 @@
-package dku.capstone.foodlog.api;
+package dku.capstone.foodlog.controller;
 
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.SubscribeRequest;

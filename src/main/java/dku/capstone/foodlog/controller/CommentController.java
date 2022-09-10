@@ -1,6 +1,5 @@
-package dku.capstone.foodlog.api;
+package dku.capstone.foodlog.controller;
 
-import dku.capstone.foodlog.domain.Comment;
 import dku.capstone.foodlog.dto.request.CommentDto;
 import dku.capstone.foodlog.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;

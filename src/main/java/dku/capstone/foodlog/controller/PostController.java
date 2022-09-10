@@ -1,10 +1,7 @@
-package dku.capstone.foodlog.api;
+package dku.capstone.foodlog.controller;
 
 import dku.capstone.foodlog.domain.Member;
-import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.request.PostRequest;
-import dku.capstone.foodlog.dto.request.PostReviewOnly;
-import dku.capstone.foodlog.dto.response.CursorResult;
 import dku.capstone.foodlog.dto.response.PostResponse;
 import dku.capstone.foodlog.service.AwsS3Service;
 import dku.capstone.foodlog.service.PostService;
@@ -12,7 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -66,11 +62,6 @@ public class PostController {
 //        return "ok";
 //    }
 //
-//    @GetMapping
-//    public CursorResult<Post> getPosts(Long cursorId, Integer size) {
-//        if (size == null) size = DEFAULT_SIZE;
-//        return this.postService.get(cursorId, PageRequest.of(0, size));
-//    }
 
 }
 

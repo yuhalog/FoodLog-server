@@ -1,4 +1,4 @@
-package dku.capstone.foodlog.api;
+package dku.capstone.foodlog.controller;
 
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;

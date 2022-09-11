@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class PlacePost {
+public class PlacePost extends BaseTime{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

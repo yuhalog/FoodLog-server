@@ -2,9 +2,11 @@ package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.domain.Place;
+import dku.capstone.foodlog.domain.PlacePost;
 import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.request.KakaoPlaceRequest;
 import dku.capstone.foodlog.dto.request.PlaceRequest;
+import dku.capstone.foodlog.dto.request.PostRequest;
 import dku.capstone.foodlog.dto.response.PlacePostDto;
 import dku.capstone.foodlog.dto.response.KakaoPlaceResponse;
 import dku.capstone.foodlog.repository.PlaceRepository;
@@ -61,18 +63,23 @@ public class PlaceServiceImpl implements PlaceService{
     }
 
     @Transactional
-    public Place checkPlaceInDb(PlaceRequest placeRequest, Integer rating) {
-        Place place = placeRepository.findByKakaoPlaceId(Long.parseLong(placeRequest.getKakaoId()));
+    public Place checkPlaceInDb(PostRequest postRequest) {
+        Place place = placeRepository.findByKakaoPlaceId(Long.parseLong(postRequest.getPlace().getKakaoId()));
 
         if (place!=null) {
-            placePostService.setAverageRating(place.getPlacePost());
+            place.getPlacePost().addPostCount();
             return place;
         } else {
-            FoodCategory foodCategory = parsingCategory(placeRequest.getCategory());
-            Place newPlace = savePlace(placeRequest, foodCategory);
-            placePostService.savePlacePost(newPlace, rating);
-            return newPlace;
+            return createPlace(postRequest.getPlace(), postRequest.getRating());
         }
+    }
+
+    private Place createPlace(PlaceRequest placeRequest, Integer rating) {
+        FoodCategory foodCategory = parsingCategory(placeRequest.getCategory());
+        Place place = savePlace(placeRequest, foodCategory);
+        PlacePost placePost = placePostService.savePlacePost(place, rating);
+        place.setPlacePost(placePost);
+        return place;
     }
 
     private FoodCategory parsingCategory(String category) {

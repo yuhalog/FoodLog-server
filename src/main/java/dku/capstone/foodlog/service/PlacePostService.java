@@ -6,7 +6,7 @@ import dku.capstone.foodlog.domain.Post;
 
 public interface PlacePostService {
 
-    public void setAverageRating(PlacePost placePost);
+    void setAverageRating(PlacePost placePost);
 
     PlacePost savePlacePost(Place place, Integer rating);
 

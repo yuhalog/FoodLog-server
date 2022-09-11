@@ -8,6 +8,6 @@ import java.util.List;
 
 public interface PostService{
 
-    public PostResponse createPost(Member member, PostRequest postRequest, List<String> pictureUrlList);
+    PostResponse createPost(Member member, PostRequest postRequest, List<String> pictureUrlList);
 
 }

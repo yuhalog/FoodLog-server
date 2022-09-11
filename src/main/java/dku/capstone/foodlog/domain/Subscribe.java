@@ -9,7 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Subscribe {
+public class Subscribe extends BaseTime{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

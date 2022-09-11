@@ -13,7 +13,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Place {
+public class Place extends BaseTime{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +47,10 @@ public class Place {
         this.name = name;
         this.address = address;
         this.category = category;
+    }
+
+    public void setPlacePost(PlacePost placePost) {
+        this.placePost = placePost;
     }
 
 }

@@ -27,15 +27,15 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public PostResponse createPost(Member member, PostRequest postRequest, List<String> pictureUrlList) {
 
-        Place place = placeService.checkPlaceInDb(postRequest.getPlace(), postRequest.getRating());
+        Place place = placeService.checkPlaceInDb(postRequest);
         Post savedPost = savePost(member, place, postRequest);
         postPictureService.savePostPictureList(pictureUrlList, savedPost);
+        placePostService.setAverageRating(savedPost.getPlace().getPlacePost());
 
         return new PostResponse(savedPost, pictureUrlList);
     }
 
-    @Transactional
-    Post savePost(Member member, Place place, PostRequest postRequest) {
+    private Post savePost(Member member, Place place, PostRequest postRequest) {
 
         Post newPost = Post.builder()
                 .member(member)

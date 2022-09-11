@@ -1,13 +1,12 @@
 package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.Member;
-import dku.capstone.foodlog.dto.request.PostRequest;
-import dku.capstone.foodlog.dto.response.PostResponse;
+import dku.capstone.foodlog.dto.PostDto;
 
 import java.util.List;
 
 public interface PostService{
 
-    PostResponse createPost(Member member, PostRequest postRequest, List<String> pictureUrlList);
+    PostDto.Response createPost(Member member, PostDto.Request postRequest, List<String> pictureUrlList);
 
 }

@@ -26,7 +26,7 @@ public class PlacePostDto {
         this.address = place.getAddress();
         this.latitude = place.getLatitude();
         this.longitude = place.getLongitude();
-        this.rating = place.getAverageRating();
+//        this.rating = place.getAverageRating();
         this.pictureReviews = pictureReviews;
     }
 

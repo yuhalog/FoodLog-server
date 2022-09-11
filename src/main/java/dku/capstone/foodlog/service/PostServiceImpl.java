@@ -1,8 +1,7 @@
 package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.*;
-import dku.capstone.foodlog.dto.request.PostRequest;
-import dku.capstone.foodlog.dto.response.PostResponse;
+import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,17 +24,17 @@ public class PostServiceImpl implements PostService {
     private final PostPictureService postPictureService;
 
     @Transactional
-    public PostResponse createPost(Member member, PostRequest postRequest, List<String> pictureUrlList) {
+    public PostDto.Response createPost(Member member, PostDto.Request postRequest, List<String> pictureUrlList) {
 
         Place place = placeService.checkPlaceInDb(postRequest);
         Post savedPost = savePost(member, place, postRequest);
         postPictureService.savePostPictureList(pictureUrlList, savedPost);
         placePostService.setAverageRating(savedPost.getPlace().getPlacePost());
 
-        return new PostResponse(savedPost, pictureUrlList);
+        return new PostDto.Response(savedPost, pictureUrlList);
     }
 
-    private Post savePost(Member member, Place place, PostRequest postRequest) {
+    private Post savePost(Member member, Place place, PostDto.Request postRequest) {
 
         Post newPost = Post.builder()
                 .member(member)

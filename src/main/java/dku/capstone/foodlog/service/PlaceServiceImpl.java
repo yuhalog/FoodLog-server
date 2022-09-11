@@ -4,9 +4,9 @@ import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.PlacePost;
 import dku.capstone.foodlog.domain.Post;
+import dku.capstone.foodlog.dto.PlaceDto;
+import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.dto.request.KakaoPlaceRequest;
-import dku.capstone.foodlog.dto.request.PlaceRequest;
-import dku.capstone.foodlog.dto.request.PostRequest;
 import dku.capstone.foodlog.dto.response.PlacePostDto;
 import dku.capstone.foodlog.dto.response.KakaoPlaceResponse;
 import dku.capstone.foodlog.repository.PlaceRepository;
@@ -63,7 +63,7 @@ public class PlaceServiceImpl implements PlaceService{
     }
 
     @Transactional
-    public Place checkPlaceInDb(PostRequest postRequest) {
+    public Place checkPlaceInDb(PostDto.Request postRequest) {
         Place place = placeRepository.findByKakaoPlaceId(Long.parseLong(postRequest.getPlace().getKakaoId()));
 
         if (place!=null) {
@@ -74,7 +74,7 @@ public class PlaceServiceImpl implements PlaceService{
         }
     }
 
-    private Place createPlace(PlaceRequest placeRequest, Integer rating) {
+    private Place createPlace(PlaceDto.Request placeRequest, Integer rating) {
         FoodCategory foodCategory = parsingCategory(placeRequest.getCategory());
         Place place = savePlace(placeRequest, foodCategory);
         PlacePost placePost = placePostService.savePlacePost(place, rating);
@@ -92,7 +92,7 @@ public class PlaceServiceImpl implements PlaceService{
     }
 
     @Transactional
-    Place savePlace(PlaceRequest placeRequest, FoodCategory foodCategory) {
+    Place savePlace(PlaceDto.Request placeRequest, FoodCategory foodCategory) {
         Place place = Place.builder()
                 .name(placeRequest.getName())
                 .address(placeRequest.getAddress())

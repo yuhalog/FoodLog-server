@@ -1,8 +1,7 @@
 package dku.capstone.foodlog.controller;
 
 import dku.capstone.foodlog.domain.Member;
-import dku.capstone.foodlog.dto.request.PostRequest;
-import dku.capstone.foodlog.dto.response.PostResponse;
+import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.service.AwsS3Service;
 import dku.capstone.foodlog.service.PostService;
 import io.swagger.annotations.Api;
@@ -33,13 +32,13 @@ public class PostController {
 
     @ApiOperation(value = "게시물 생성", notes = "게시물 생성", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PostResponse> newPost(
+    public ResponseEntity<PostDto.Response> newPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @Parameter(name = "model", required = true, schema = @Schema(implementation = PostRequest.class), description = "User Details") @RequestPart(value = "post") PostRequest postRequest){
+            @Parameter(name = "model", required = true, schema = @Schema(implementation = PostDto.Request.class), description = "User Details") @RequestPart(value = "post") PostDto.Request postRequest){
 
         List<String> pictureUrlList = awsS3Service.uploadImage(multipartFile);
-        PostResponse postResponse = postService.createPost(member, postRequest, pictureUrlList);
+        PostDto.Response postResponse = postService.createPost(member, postRequest, pictureUrlList);
 
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }

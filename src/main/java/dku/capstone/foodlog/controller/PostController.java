@@ -52,6 +52,14 @@ public class PostController {
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "게시물 조회", notes = "게시물 조회")
+    @GetMapping("/{postId}")
+    public ResponseEntity<PostDto.Response> getPost(
+            @PathVariable("postId") Long postId) {
+        PostDto.Response postResponse = postService.getPost(postId);
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
+    }
+
 //    @ApiOperation(value = "", notes = "게시물 단일 조회")
 //    @GetMapping("/{postId}")
 //    public ResponseEntity<PostFormDto> getPost(@PathVariable Long postId){

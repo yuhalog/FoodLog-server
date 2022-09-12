@@ -23,6 +23,8 @@ public class PlacePostDto {
 
         private Long postCount;
 
+        private String purpose;
+
         private PlaceDto.Response place;
 
         private List<PostDto.Summary> contents;
@@ -31,6 +33,7 @@ public class PlacePostDto {
             this.placePostid = placePost.getId();
             this.averageRating = placePost.getAverageRating();
             this.postCount = placePost.getPostCount();
+            this.purpose = placePost.getPurpose().getValue();
             this.place = new PlaceDto.Response(placePost.getPlace());
             this.contents = placePost.getPlace().getPostList().stream()
                     .map(entity -> new PostDto.Summary(entity))

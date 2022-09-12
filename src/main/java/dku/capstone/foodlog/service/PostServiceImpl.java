@@ -30,8 +30,9 @@ public class PostServiceImpl implements PostService {
         Place place = placeService.checkPlaceInDb(postRequest);
         Post savedPost = savePost(member, place, postRequest);
         postPictureService.savePostPictureList(pictureUrlList, savedPost);
-        placePostService.setAverageRating(savedPost.getPlace().getPlacePost());
+        placePostService.setPostPlace(savedPost.getPlace().getPlacePost());
 
+        // TODO 메소드 분리하기
         return new PostDto.Response(savedPost);
     }
 
@@ -65,7 +66,7 @@ public class PostServiceImpl implements PostService {
         return new PostDto.Response(post);
     }
 
-    //TODO 게시물 삭제
+    //TODO 게시물 삭제 - 게시물 count, rating, purpose 변경하기
 }
 
 //    public Place findPlaceBySavePost(PostFormDto postFormDto) {

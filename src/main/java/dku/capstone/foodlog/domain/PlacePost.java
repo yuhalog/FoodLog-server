@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.domain;
 
+import dku.capstone.foodlog.constant.FoodPurpose;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,11 +26,19 @@ public class PlacePost extends BaseTime{
 
     private Float averageRating;
 
+    @Enumerated(EnumType.STRING)
+    private FoodPurpose purpose;
+
     @Builder
-    public PlacePost(Place place, Long postCount, Float averageRating) {
+    public PlacePost(Place place, Long postCount, Float averageRating, FoodPurpose purpose) {
         this.place = place;
         this.postCount = postCount;
         this.averageRating = averageRating;
+        this.purpose = purpose;
+    }
+
+    public void setPurpose(FoodPurpose purpose) {
+        this.purpose = purpose;
     }
 
     public void setAverageRating(Float averageRating) {

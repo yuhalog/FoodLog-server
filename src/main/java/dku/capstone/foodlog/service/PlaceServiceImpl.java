@@ -70,14 +70,14 @@ public class PlaceServiceImpl implements PlaceService{
             place.getPlacePost().addPostCount();
             return place;
         } else {
-            return createPlace(postRequest.getPlace(), postRequest.getRating());
+            return createPlace(postRequest);
         }
     }
 
-    private Place createPlace(PlaceDto.Request placeRequest, Integer rating) {
-        FoodCategory foodCategory = parsingCategory(placeRequest.getCategory());
-        Place place = savePlace(placeRequest, foodCategory);
-        PlacePost placePost = placePostService.savePlacePost(place, rating);
+    private Place createPlace(PostDto.Request postRequest) {
+        FoodCategory foodCategory = parsingCategory(postRequest.getPlace().getCategory());
+        Place place = savePlace(postRequest.getPlace(), foodCategory);
+        PlacePost placePost = placePostService.savePlacePost(place, postRequest);
         place.setPlacePost(placePost);
         return place;
     }

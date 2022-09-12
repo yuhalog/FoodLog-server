@@ -1,11 +1,11 @@
 package dku.capstone.foodlog.service;
 
+import dku.capstone.foodlog.constant.FoodPurpose;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.PlacePost;
-import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.PlacePostDto;
+import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.repository.PlacePostRepository;
-import dku.capstone.foodlog.repository.PlaceRepository;
 import dku.capstone.foodlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,19 +20,28 @@ public class PlacePostServiceImpl implements PlacePostService{
 
     private final PlacePostRepository placePostRepository;
     private final PostRepository postRepository;
-    private final PlaceRepository placeRepository;
 
     @Transactional
-    public void setAverageRating(PlacePost placePost) {
+    public void setPostPlace(PlacePost placePost) {
+        setAverageRating(placePost);
+        setPurpose(placePost);
+    }
+
+    private void setAverageRating(PlacePost placePost) {
         placePost.setAverageRating(postRepository.getAverageRating(placePost.getPlace().getId()));
     }
 
+    private void setPurpose(PlacePost placePost) {
+        placePost.setPurpose(FoodPurpose.valueOf(postRepository.findWithPagingByPurpose(placePost.getPlace().getId()).get(0)));
+    }
+
     @Transactional
-    public PlacePost savePlacePost(Place place, Integer rating) {
+    public PlacePost savePlacePost(Place place, PostDto.Request postRequest) {
         PlacePost placePost = PlacePost.builder()
                 .place(place)
                 .postCount(1L)
-                .averageRating(Float.valueOf(rating))
+                .averageRating(Float.valueOf(postRequest.getRating()))
+                .purpose(postRequest.getPurpose())
                 .build();
 
         return placePostRepository.save(placePost);
@@ -44,5 +53,4 @@ public class PlacePostServiceImpl implements PlacePostService{
 
         return new PlacePostDto.Detail(placePost);
     }
-
 }

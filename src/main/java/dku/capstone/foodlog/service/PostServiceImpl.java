@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 @Transactional(readOnly = true)
@@ -31,7 +32,7 @@ public class PostServiceImpl implements PostService {
         postPictureService.savePostPictureList(pictureUrlList, savedPost);
         placePostService.setAverageRating(savedPost.getPlace().getPlacePost());
 
-        return new PostDto.Response(savedPost, pictureUrlList);
+        return new PostDto.Response(savedPost);
     }
 
     private Post savePost(Member member, Place place, PostDto.Request postRequest) {
@@ -47,6 +48,24 @@ public class PostServiceImpl implements PostService {
 
         return postRepository.save(newPost);
     }
+
+    @Transactional
+    public PostDto.Response updatePost(Long postId, PostDto.Request postRequest) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("게시물이 없습니다."));
+        post.setReview(postRequest.getReview());
+
+        return new PostDto.Response(post);
+    }
+
+    public PostDto.Response getPost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("게시물이 없습니다."));
+
+        return new PostDto.Response(post);
+    }
+
+    //TODO 게시물 삭제
 }
 
 //    public Place findPlaceBySavePost(PostFormDto postFormDto) {

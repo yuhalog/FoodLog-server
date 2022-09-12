@@ -31,6 +31,7 @@ public class PostPictureServiceImpl implements PostPictureService {
         for (String pictureUrl : pictureUrlList) {
             postPictureList.add(savePostPicture(pictureUrl, post));
         }
+        post.setPictureList(postPictureList);
 
         return postPictureList;
     }

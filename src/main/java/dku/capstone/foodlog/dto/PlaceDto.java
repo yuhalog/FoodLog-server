@@ -10,7 +10,6 @@ import lombok.NoArgsConstructor;
 
 public class PlaceDto {
 
-    @ApiModel("장소 조회")
     @Builder
     @AllArgsConstructor
     @NoArgsConstructor
@@ -18,7 +17,7 @@ public class PlaceDto {
     public static class Response {
 
         @ApiModelProperty(example = "1")
-        private Long postId;
+        private Long placeId;
 
         @ApiModelProperty(example = "1110210115")
         private Long kakaoId;
@@ -39,7 +38,7 @@ public class PlaceDto {
         private Double longitude;
 
         public Response(Place place) {
-            this.postId = place.getId();
+            this.placeId = place.getId();
             this.kakaoId = place.getKakaoPlaceId();
             this.name = place.getName();
             this.address = place.getAddress();

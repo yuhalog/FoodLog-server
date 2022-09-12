@@ -32,7 +32,7 @@ public class PostController {
 
     @ApiOperation(value = "게시물 생성", notes = "게시물 생성", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<PostDto.Response> newPost(
+    public ResponseEntity<PostDto.Response> createPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
             @Parameter(name = "model", required = true, schema = @Schema(implementation = PostDto.Request.class), description = "User Details") @RequestPart(value = "post") PostDto.Request postRequest){
@@ -40,6 +40,15 @@ public class PostController {
         List<String> pictureUrlList = awsS3Service.uploadImage(multipartFile);
         PostDto.Response postResponse = postService.createPost(member, postRequest, pictureUrlList);
 
+        return new ResponseEntity<>(postResponse, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "게시물 수정", notes = "게시물 수정 \n 리뷰만 수정 가능합니다.")
+    @PutMapping("/{postId}")
+    public ResponseEntity<PostDto.Response> updatePost(
+            @PathVariable("postId") Long postId,
+            @RequestBody PostDto.Request postRequest) {
+        PostDto.Response postResponse = postService.updatePost(postId, postRequest);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
 

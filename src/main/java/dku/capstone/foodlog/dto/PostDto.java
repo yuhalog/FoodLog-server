@@ -26,10 +26,16 @@ public class PostDto {
 
         private String review;
 
+        private Integer rating;
+
+        private String purpose;
+
         public Summary(Post post) {
             this.postId = post.getId();
             this.picture = post.getPictureList().get(0).getPictureUrl();
             this.review = post.getReview();
+            this.rating = post.getRating();
+            this.purpose = post.getPurpose().getValue();
         }
     }
 
@@ -55,7 +61,7 @@ public class PostDto {
         private String review;
 
         @ApiModelProperty(example = "가족")
-        private FoodPurpose purpose;
+        private String purpose;
 
         @ApiModelProperty(example = "2022-09-11")
         private String date;
@@ -68,7 +74,7 @@ public class PostDto {
             this.pictures = post.getPictureList().stream().map(PostPicture::getPictureUrl).collect(Collectors.toList());
             this.rating = post.getRating();
             this.review = post.getReview();
-            this.purpose = post.getPurpose();
+            this.purpose = post.getPurpose().getValue();
             this.date = post.getDate().toString();
             this.place = new PlaceDto.Response(post.getPlace());
         }

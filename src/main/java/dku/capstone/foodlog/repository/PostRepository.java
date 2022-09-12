@@ -15,9 +15,15 @@ public interface PostRepository extends JpaRepository<Post, Long> {
 
     Optional<Post> findById(Long postId);
 
-    @Query("select avg(coalesce(p.rating, 0)) from Post p " +
-            "where p.place.id = :id")
-    Float getAverageRating(@Param("id") Long id);
+    @Query("SELECT AVG(COALESCE(p.rating, 0)) FROM Post p " +
+            "WHERE p.place.id = :id")
+    Float getAverageRating(@Param("id") Long placeId);
+
+    @Query("SELECT p.purpose FROM Post p " +
+            "WHERE p.place.id = :id " +
+            "GROUP BY p.purpose " +
+            "ORDER BY COUNT (p) DESC")
+    List<String> findWithPagingByPurpose(@Param("id") Long placeId);
 
     List<Post> findAllByOrderByIdDesc(Pageable page);
 

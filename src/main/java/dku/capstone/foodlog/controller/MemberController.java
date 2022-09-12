@@ -55,8 +55,8 @@ public class MemberController {
     @PutMapping("/profile/{id}")
     public ResponseEntity<?> createMemberProfile(
             @PathVariable("id") Long memberId,
-            @RequestPart(value = "profileDto") MemberProfileDto request,
-            @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {
+            @RequestPart(value = "member") MemberProfileDto request,
+            @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
         Long response = null;
 
         try {

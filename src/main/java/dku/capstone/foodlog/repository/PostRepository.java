@@ -8,10 +8,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
-    Post getById(Long postId);
+
+    Optional<Post> findById(Long postId);
 
     @Query("select avg(coalesce(p.rating, 0)) from Post p " +
             "where p.place.id = :id")

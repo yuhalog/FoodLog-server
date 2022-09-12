@@ -133,23 +133,5 @@ public class PlaceServiceImpl implements PlaceService{
 //
 //    }
 
-    /**
-     * 중간 게시물 조회
-     */
-    public PlacePostDto getPlacePost(Long placeId) {
 
-        Place place = placeRepository.findById(placeId)
-                .orElseThrow(() -> new NoSuchElementException("장소가 없습니다."));
-
-        List<PlacePostDto.PictureReview> pictureReviews = new ArrayList<>();
-
-        for (Post post : place.getPostList()) {
-            PlacePostDto.PictureReview pictureReview = new PlacePostDto.PictureReview(post);
-            pictureReviews.add(pictureReview);
-        }
-
-        PlacePostDto placePostDto = new PlacePostDto(place, pictureReviews);
-
-        return placePostDto;
-    }
 }

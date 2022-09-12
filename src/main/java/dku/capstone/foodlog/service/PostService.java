@@ -9,4 +9,7 @@ public interface PostService{
 
     PostDto.Response createPost(Member member, PostDto.Request postRequest, List<String> pictureUrlList);
 
+    PostDto.Response updatePost(Long postId, PostDto.Request postRequest);
+
+    PostDto.Response getPost(Long postId);
 }

@@ -54,6 +54,10 @@ public class Post extends BaseTime{
         this.place = place;
     }
 
+    public void setPictureList(List<PostPicture> pictureList) {
+        this.pictureList = pictureList;
+    }
+
     public void setReview(String review) {
         this.review = review;
     }

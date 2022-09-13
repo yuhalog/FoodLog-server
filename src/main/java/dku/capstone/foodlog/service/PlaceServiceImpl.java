@@ -3,11 +3,10 @@ package dku.capstone.foodlog.service;
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.PlacePost;
-import dku.capstone.foodlog.domain.Post;
+import dku.capstone.foodlog.dto.MapDto;
 import dku.capstone.foodlog.dto.PlaceDto;
 import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.dto.request.KakaoPlaceRequest;
-import dku.capstone.foodlog.dto.response.PlacePostDto;
 import dku.capstone.foodlog.dto.response.KakaoPlaceResponse;
 import dku.capstone.foodlog.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
@@ -20,9 +19,8 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -105,33 +103,9 @@ public class PlaceServiceImpl implements PlaceService{
         return placeRepository.save(place);
     }
 
-//    /**
-//     * 지도 조회 (+필터조건 포함하기)
-//     */
-//    public MapDto getMapPlace(MapRequest request) {
-//
-//        FoodPurpose purpose = request.getPurpose();
-//        FoodType type = request.getType();
-//        Float rating = request.getRating();
-//
-//        QPlace place = QPlace.place;
-//
-//        BooleanBuilder builder = new BooleanBuilder();
-//
-//        if (purpose != null){
-//            builder.and(place.purpose.eq(purpose));
-//        }
-//        if (type != null) {
-//            builder.and(place.type.eq(type));
-//        }
-//        if (rating != null) {
-//            builder.and(place.averageRating.goe(rating));
-//        }
-//        List<MapDto> list = queryFactory.selectFrom(place)
-//                .where(boolean)
-//        .fetch();
-//
-//    }
-
-
+    public List<MapDto.Response> searchPlaceWithFilter(MapDto.Request mapRequest) {
+        List<Place> places = placeRepository.searchPlace(mapRequest);
+        List<MapDto.Response> placeResponseList  = places.stream().map(MapDto.Response::entityToDto).collect(Collectors.toList());
+        return placeResponseList;
+    }
 }

@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api/subscribe")
+@RequestMapping("/api")
 @RestController
 public class SubscribeController {
 
     private final SubscribeService subscribeService;
 
-    @PostMapping("")
+    @PostMapping("/v1/subscribe")
     public ResponseEntity<Long> subscribe(
             @RequestBody SubscribeRequest request,
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member) {
@@ -31,7 +31,7 @@ public class SubscribeController {
         return new ResponseEntity<>(subscribeId, HttpStatus.OK);
     }
 
-    @DeleteMapping("")
+    @DeleteMapping("/v1/subscribe")
     public ResponseEntity<Long> unSubscribe(
             @RequestBody SubscribeRequest request,
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member) {
@@ -39,7 +39,7 @@ public class SubscribeController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @GetMapping("/follower/{id}")
+    @GetMapping("/v1/subscribe/follower/{id}")
     public ResponseEntity<Page<MemberPageResponse>> getFollowerList(
             @PathVariable("id") Long memberId,
             @PageableDefault(size = 12) Pageable pageable,
@@ -48,7 +48,7 @@ public class SubscribeController {
         return new ResponseEntity<>(followerList, HttpStatus.OK);
     }
 
-    @GetMapping("/following/{id}")
+    @GetMapping("/v1/subscribe/following/{id}")
     public ResponseEntity<Page<MemberPageResponse>> getFollowingList(
             @PathVariable("id") Long memberId,
             @PageableDefault(size = 12) Pageable pageable,

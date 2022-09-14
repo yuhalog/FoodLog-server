@@ -12,14 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/place-post")
+@RequestMapping("/api")
 @RestController
 public class PlacePostController {
 
     private final PlacePostService placePostService;
 
     @ApiOperation(value = "중간 게시물 조회", notes = "중간 게시물 조회 \n 중간 게시물 id로 조회합니다.")
-    @GetMapping("{placePostId}")
+    @GetMapping("/v1/place-post/{placePostId}")
     public ResponseEntity<PlacePostDto.Detail> getPlacePost(
             @PathVariable("placePostId") Long placePostId) {
         PlacePostDto.Detail placePostDetail = placePostService.getPlacePostDetail(placePostId);

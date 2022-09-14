@@ -19,7 +19,7 @@ public class PlaceController {
 
     private final PlaceService placeService;
 
-    @PostMapping("/api/map")
+    @PostMapping("/v1/map")
     public ResponseEntity<?> getPlaceWithFilter(
             @RequestBody MapDto.Request mapRequest) {
         List<MapDto.Response> responses = placeService.searchPlaceWithFilter(mapRequest);

@@ -17,6 +17,8 @@ public class PostPicture extends BaseTime{
     @Column(name = "post_picture_id")
     private Long id;
 
+    private String imageName;
+
     private String pictureUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,9 +26,9 @@ public class PostPicture extends BaseTime{
     private Post post;
 
     @Builder
-    public PostPicture(String pictureUrl, Post post){
-        this.post = post;
+    public PostPicture(String imageName, String pictureUrl, Post post) {
+        this.imageName = imageName;
         this.pictureUrl = pictureUrl;
+        this.post = post;
     }
-
 }

@@ -21,7 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.NoSuchElementException;
 
 @Slf4j
-@RequestMapping("/api/member")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
@@ -29,7 +29,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @ApiOperation(value = "", notes = "로그인")
-    @PostMapping("/login")
+    @PostMapping("/v1/member/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request) {
         LoginResponse response = memberService.login(request);
@@ -37,7 +37,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "", notes = "회원가입")
-    @PostMapping("/join")
+    @PostMapping("/v1/member/join")
     public ResponseEntity<LoginResponse> join(
             @RequestPart(value = "memberJoinDto") MemberJoinRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {
@@ -51,8 +51,14 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiOperation(value = "", notes = "username 중복 체크")
+    @PostMapping("/v1/member/username")
+    public ResponseEntity<?> isUsernameDuplicate(@RequestBody String username) {
+        return new ResponseEntity<>(memberService.isUsernameDuplicate(username), HttpStatus.OK);
+    }
+
     @ApiOperation(value = "", notes = "프로필 수정")
-    @PutMapping("/profile/{id}")
+    @PutMapping("/v1/member/profile/{id}")
     public ResponseEntity<?> createMemberProfile(
             @PathVariable("id") Long memberId,
             @RequestPart(value = "member") MemberProfileDto request,
@@ -75,19 +81,13 @@ public class MemberController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @ApiOperation(value = "", notes = "username 중복 체크")
-    @PostMapping("/check/username")
-    public ResponseEntity<?> isUsernameDuplicate(@RequestBody String username) {
-        return new ResponseEntity<>(memberService.isUsernameDuplicate(username), HttpStatus.OK);
-    }
-
     @ApiOperation(value = "", notes = "프로필 조회")
-    @GetMapping("/profile/{id}")
+    @GetMapping("/v1/member/profile/{id}")
     public ResponseEntity<?> getMemberProfile(@PathVariable("id") Long memberId){
         return new ResponseEntity<>(memberService.getProfile(memberId), HttpStatus.OK);
     }
 
-    @GetMapping("/list")
+    @GetMapping("/v1/member/list")
     public ResponseEntity<Page<MemberPageResponse>> getMemberList(
             @RequestParam String username,
             @PageableDefault(size=10, sort = "username", direction = Sort.Direction.ASC) Pageable pageable) {

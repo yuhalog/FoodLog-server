@@ -22,7 +22,18 @@ public class PlacePostServiceImpl implements PlacePostService{
     private final PostRepository postRepository;
 
     @Transactional
-    public void setPostPlace(PlacePost placePost) {
+    public void removePlacePost(PlacePost placePost) {
+        placePost.removePostCount();
+        setPlacePost(placePost);
+    }
+
+    @Transactional
+    public void addPlacePost(PlacePost placePost) {
+        placePost.addPostCount();
+        setPlacePost(placePost);
+    }
+
+    public void setPlacePost(PlacePost placePost) {
         setAverageRating(placePost);
         setPurpose(placePost);
     }
@@ -39,7 +50,7 @@ public class PlacePostServiceImpl implements PlacePostService{
     public PlacePost savePlacePost(Place place, PostDto.Request postRequest) {
         PlacePost placePost = PlacePost.builder()
                 .place(place)
-                .postCount(1L)
+                .postCount(0L)
                 .averageRating(Float.valueOf(postRequest.getRating()))
                 .purpose(postRequest.getPurpose())
                 .build();

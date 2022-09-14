@@ -7,7 +7,9 @@ import dku.capstone.foodlog.dto.PostDto;
 
 public interface PlacePostService {
 
-    void setPostPlace(PlacePost placePost);
+    void addPlacePost(PlacePost placePost);
+
+    void removePlacePost(PlacePost placePost);
 
     PlacePost savePlacePost(Place place, PostDto.Request postRequest);
 

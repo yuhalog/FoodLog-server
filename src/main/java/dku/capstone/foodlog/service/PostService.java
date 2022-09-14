@@ -12,4 +12,6 @@ public interface PostService{
     PostDto.Response updatePost(Long postId, PostDto.Request postRequest);
 
     PostDto.Response getPost(Long postId);
+
+    void deletePost(Long postId);
 }

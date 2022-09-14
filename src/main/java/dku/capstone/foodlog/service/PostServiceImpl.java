@@ -25,12 +25,12 @@ public class PostServiceImpl implements PostService {
     private final PostPictureService postPictureService;
 
     @Transactional
-    public PostDto.Response createPost(Member member, PostDto.Request postRequest, List<String> pictureUrlList) {
+    public PostDto.Response createPost(Member member, PostDto.Request postRequest, List<String> imageNameList) {
 
         Place place = placeService.checkPlaceInDb(postRequest);
         Post savedPost = savePost(member, place, postRequest);
-        postPictureService.savePostPictureList(pictureUrlList, savedPost);
-        placePostService.setPostPlace(savedPost.getPlace().getPlacePost());
+        postPictureService.savePostPictureList(imageNameList, savedPost);
+        placePostService.addPlacePost(savedPost.getPlace().getPlacePost());
 
         // TODO 메소드 분리하기
         return new PostDto.Response(savedPost);
@@ -66,7 +66,16 @@ public class PostServiceImpl implements PostService {
         return new PostDto.Response(post);
     }
 
-    //TODO 게시물 삭제 - 게시물 count, rating, purpose 변경하기
+    @Transactional
+    public void deletePost(Long postId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new NoSuchElementException("게시물이 없습니다."));
+
+        post.getPlace().getPostList().remove(post);
+        postPictureService.deletePostPictureList(post.getPictureList());
+        placePostService.removePlacePost(post.getPlace().getPlacePost());
+        postRepository.delete(post);
+    }
 }
 
 //    public Place findPlaceBySavePost(PostFormDto postFormDto) {
@@ -92,49 +101,6 @@ public class PostServiceImpl implements PostService {
 //            placeRepository.save(place);
 //        }
 //        return place;
-//    }
-//
-//
-//    //create post
-//    public PostFormDto createPost(PostFormDto postFormDto, List<String> pictureImgList){
-//
-//        Place place = findPlaceBySavePost(postFormDto);
-//
-//        Member member = memberRepository.findById(postFormDto.getMemberId())
-//                .orElseThrow(()-> new IllegalArgumentException("회원을 찾을 수 없음"));
-//
-//        Post post = Post.builder()
-//                .member(member)
-//                .rating(postFormDto.getRating())
-//                .review(postFormDto.getReview())
-//                .purpose(postFormDto.getPurpose())
-//                .place(place)
-//                .date(LocalDate.parse(postFormDto.getDate(), DateTimeFormatter.ISO_DATE))
-//                .build();
-//
-//        postRepository.save(post);
-//
-//        savePostPicture(pictureImgList, post);
-//
-//        PostFormDto newPost = new PostFormDto(post, pictureImgList);
-//
-//        return newPost;
-//    }
-//
-//    //see post
-//    @Transactional(readOnly = true)
-//    public PostFormDto getPost(Long postId){
-//        Post post = postRepository.getById(postId);
-//        PostFormDto postFormDto = new PostFormDto(post);
-//        return postFormDto;
-//    }
-//
-//    //edit post
-//    public String updatePostReview(PostReviewOnly postReviewOnly, Long postId){
-//        Post post = postRepository.getById(postId);
-//        post.setReview(postReviewOnly.getReview());
-//        String review = postReviewOnly.getReview();
-//        return review;
 //    }
 //
 //    //delete post

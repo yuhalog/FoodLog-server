@@ -8,4 +8,6 @@ import java.util.List;
 public interface PostPictureService {
 
     List<PostPicture> savePostPictureList(List<String> pictureUrlList, Post post);
+
+    void deletePostPictureList(List<PostPicture> postPictureList);
 }

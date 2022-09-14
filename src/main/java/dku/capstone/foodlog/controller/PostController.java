@@ -23,7 +23,7 @@ import java.util.List;
 @Api(tags = {"Post"})
 @Slf4j 
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/post")
+@RequestMapping("/api")
 @RestController
 public class PostController {
 
@@ -31,7 +31,7 @@ public class PostController {
     private final AwsS3Service awsS3Service;
 
     @ApiOperation(value = "게시물 생성", notes = "게시물 생성", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    @PostMapping(value = "", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping(value = "/v1/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostDto.Response> createPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestPart(value = "file") List<MultipartFile> multipartFile,
@@ -44,7 +44,7 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시물 수정", notes = "게시물 수정 \n 리뷰만 수정 가능합니다.")
-    @PutMapping("/{postId}")
+    @PutMapping("/v1/post/{postId}")
     public ResponseEntity<PostDto.Response> updatePost(
             @PathVariable("postId") Long postId,
             @RequestBody PostDto.Request postRequest) {
@@ -53,12 +53,22 @@ public class PostController {
     }
 
     @ApiOperation(value = "게시물 조회", notes = "게시물 조회")
-    @GetMapping("/{postId}")
+    @GetMapping("/v1/post/{postId}")
     public ResponseEntity<PostDto.Response> getPost(
             @PathVariable("postId") Long postId) {
         PostDto.Response postResponse = postService.getPost(postId);
         return new ResponseEntity<>(postResponse, HttpStatus.OK);
     }
+
+    @ApiOperation(value = "게시물 삭제", notes = "게시물 삭제")
+    @DeleteMapping("/v1/post/{postId}")
+    public ResponseEntity<?> deletePost(
+            @PathVariable("postId") Long postId) {
+        postService.deletePost(postId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+
 
 //    @ApiOperation(value = "", notes = "게시물 단일 조회")
 //    @GetMapping("/{postId}")

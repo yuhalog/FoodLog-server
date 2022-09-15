@@ -5,8 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 
 @Getter
-@Builder
-@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Subscribe extends BaseTime{
@@ -23,4 +21,10 @@ public class Subscribe extends BaseTime{
     @ManyToOne
     @JoinColumn(name = "subscribe")
     private Member subscriber;
+
+    @Builder
+    public Subscribe(Member member, Member subscriber) {
+        this.member = member;
+        this.subscriber = subscriber;
+    }
 }

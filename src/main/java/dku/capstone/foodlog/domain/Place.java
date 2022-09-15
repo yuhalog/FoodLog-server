@@ -1,17 +1,16 @@
 package dku.capstone.foodlog.domain;
 
 import dku.capstone.foodlog.constant.FoodCategory;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Place extends BaseTime{
 
@@ -22,8 +21,9 @@ public class Place extends BaseTime{
 
     private Long kakaoPlaceId;
 
+    @Builder.Default
     @OneToMany(mappedBy = "place")
-    private List<Post> postList = new ArrayList<>();
+    private List<Post> postList = new ArrayList<Post>();
 
     @OneToOne(mappedBy = "place")
     private PlacePost placePost;

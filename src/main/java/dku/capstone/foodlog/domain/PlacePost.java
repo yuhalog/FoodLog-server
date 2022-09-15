@@ -55,11 +55,4 @@ public class PlacePost extends BaseTime{
         return postCount;
     }
 
-    //별점이 바뀔 때마다 실행되는 메서드 (별점 계산)
-//    public float calAverageRating(int rating){
-//        sumRating += rating;
-//        averageRating = Math.round((sumRating / (float)postCount) * 10) / (float)10.0;
-//        return averageRating;
-//    }
-
 }

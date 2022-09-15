@@ -1,6 +1,5 @@
 package dku.capstone.foodlog.domain;
 
-import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
 import lombok.*;
 
@@ -9,8 +8,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class Post extends BaseTime{
 
@@ -23,8 +24,9 @@ public class Post extends BaseTime{
     @JoinColumn(name = "member_id")
     private Member member;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post")
-    private List<PostPicture> pictureList = new ArrayList<>();
+    private List<PostPicture> pictureList = new ArrayList<PostPicture>();
 
     private Integer rating;
 
@@ -39,8 +41,9 @@ public class Post extends BaseTime{
     @JoinColumn(name = "place_id")
     private Place place;
 
+    @Builder.Default
     @OneToMany(mappedBy = "post")
-    private List<Comment> commentList = new ArrayList<>();
+    private List<Comment> commentList = new ArrayList<Comment>();
 
     @Builder
     public Post(Member member, List<PostPicture> pictureList, Integer rating, String review,

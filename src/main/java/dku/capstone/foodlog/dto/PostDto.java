@@ -68,6 +68,8 @@ public class PostDto {
 
         private PlaceDto.Response place;
 
+        private List<CommentDto.Response> comment;
+
         public Response(Post post) {
             this.postId = post.getId();
             this.member = post.getMember().getUsername();
@@ -77,6 +79,7 @@ public class PostDto {
             this.purpose = post.getPurpose().getValue();
             this.date = post.getDate().toString();
             this.place = new PlaceDto.Response(post.getPlace());
+            this.comment = post.getCommentList().stream().map(CommentDto.Response::entityToDto).collect(Collectors.toList());
         }
     }
 

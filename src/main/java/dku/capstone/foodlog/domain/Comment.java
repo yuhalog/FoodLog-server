@@ -28,9 +28,7 @@ public class Comment extends BaseTime{
     private String content;
 
     @Builder
-    public Comment(Post post,
-                   Member member,
-                   String content){
+    public Comment(Post post, Member member, String content){
         this.post = post;
         this.member = member;
         this.content = content;

@@ -2,10 +2,7 @@ package dku.capstone.foodlog.domain;
 
 import dku.capstone.foodlog.constant.Gender;
 import dku.capstone.foodlog.dto.response.MemberProfileDto;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
@@ -14,8 +11,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-@Getter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 @DynamicInsert
 public class Member extends BaseTime{
@@ -36,11 +35,13 @@ public class Member extends BaseTime{
 
     private LocalDate birthday;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member")
-    private List<Post> postList = new ArrayList<>();
+    private List<Post> postList = new ArrayList<Post>();
 
+    @Builder.Default
     @OneToMany(mappedBy = "member")
-    private List<Subscribe> subscribers = new ArrayList<>();
+    private List<Subscribe> subscribers = new ArrayList<Subscribe>();
 
     @ColumnDefault(value = "'default image'")
     private String profilePicture;

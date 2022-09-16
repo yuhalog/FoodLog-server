@@ -63,35 +63,11 @@ public class PostController {
     @ApiOperation(value = "게시물 삭제", notes = "게시물 삭제")
     @DeleteMapping("/v1/post/{postId}")
     public ResponseEntity<?> deletePost(
+            @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @PathVariable("postId") Long postId) {
-        postService.deletePost(postId);
+        postService.deletePost(member, postId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
-
-//    @ApiOperation(value = "", notes = "게시물 단일 조회")
-//    @GetMapping("/{postId}")
-//    public ResponseEntity<PostFormDto> getPost(@PathVariable Long postId){
-//        PostFormDto postFormDto = postService.getPost(postId);
-//        return new ResponseEntity<>(postFormDto, HttpStatus.OK);
-//    }
-//
-//    @ApiOperation(value = "", notes = "게시물 수정")
-//    @PutMapping("/{postId}")
-//    public ResponseEntity<String> updatePost(@PathVariable("postId") Long postId, @RequestBody PostReviewOnly postReviewOnly) {
-//        String review = postService.updatePostReview(postReviewOnly, postId);
-//        return new ResponseEntity<>(review, HttpStatus.OK);
-//
-//    }
-//
-//    @ApiOperation(value = "", notes = "게시물 삭제")
-//    @DeleteMapping("/{postId}")
-//    public String deletePost(@PathVariable Long postId){
-//        postService.deletePost(postId);
-//        return "ok";
-//    }
-//
 
 }
 

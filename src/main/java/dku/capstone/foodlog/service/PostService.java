@@ -13,5 +13,5 @@ public interface PostService{
 
     PostDto.Response getPost(Long postId);
 
-    void deletePost(Long postId);
+    void deletePost(Member member, Long postId);
 }

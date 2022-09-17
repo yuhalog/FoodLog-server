@@ -7,6 +7,9 @@ import dku.capstone.foodlog.constant.FoodPurpose;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.dto.MapDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -48,18 +51,56 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         }
     }
 
-    public List<Place> searchPlace(MapDto.Request mapRequest) {
+    public List<Place> searchPlace(MapDto.Filter mapFilter) {
 
         return queryFactory
                 .selectFrom(place)
                 .where(
                         postCountGt(),
-                        purposeEq(mapRequest.getPurposeList()),
-                        categoryEq(mapRequest.getCategoryList()),
-                        ratingGoe(mapRequest.getRating()),
-                        coordinateBetween(mapRequest.getLatitude(), mapRequest.getLatitudeDelta()),
-                        coordinateBetween(mapRequest.getLongitude(), mapRequest.getLongitudeDelta()))
+                        purposeEq(mapFilter.getPurposeList()),
+                        categoryEq(mapFilter.getCategoryList()),
+                        ratingGoe(mapFilter.getRating()),
+                        coordinateBetween(mapFilter.getLatitude(), mapFilter.getLatitudeDelta()),
+                        coordinateBetween(mapFilter.getLongitude(), mapFilter.getLongitudeDelta()))
                 .join(place.placePost, placePost)
                 .fetch();
     }
+
+    private BooleanExpression placeNameLike(String name) {
+        return name != null? place.name.contains(name) : null;
+    }
+
+    private List<Place> searchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {
+
+        return queryFactory
+                .selectFrom(place)
+                .where(
+                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        placeNameLike(mapSearch.getQuery())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    private Long getCountSearchPlaceByName(MapDto.Search mapSearch) {
+
+        return queryFactory
+                .select(place.count())
+                .from(place)
+                .where(
+                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        placeNameLike(mapSearch.getQuery())
+                )
+                .fetchOne();
+    }
+
+    public Page<Place> getPageSearchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {
+        List<Place> content = searchPlaceByName(mapSearch, pageable);
+        Long count = getCountSearchPlaceByName(mapSearch);
+        return new PageImpl<>(content, pageable, count);
+    }
+
 }

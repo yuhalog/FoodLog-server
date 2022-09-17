@@ -4,12 +4,15 @@ import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.PlacePost;
 import dku.capstone.foodlog.dto.MapDto;
+import dku.capstone.foodlog.dto.PageDto;
 import dku.capstone.foodlog.dto.PlaceDto;
 import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.dto.request.KakaoPlaceRequest;
 import dku.capstone.foodlog.dto.response.KakaoPlaceResponse;
 import dku.capstone.foodlog.repository.PlaceRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.*;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.stereotype.Service;
@@ -20,7 +23,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static dku.capstone.foodlog.dto.MapDto.Response.entityToDto;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -103,9 +109,17 @@ public class PlaceServiceImpl implements PlaceService{
         return placeRepository.save(place);
     }
 
-    public List<MapDto.Response> searchPlaceWithFilter(MapDto.Request mapRequest) {
-        List<Place> places = placeRepository.searchPlace(mapRequest);
+    public List<MapDto.Response> searchPlaceWithFilter(MapDto.Filter mapFilterRequest) {
+        List<Place> places = placeRepository.searchPlace(mapFilterRequest);
         List<MapDto.Response> placeResponseList  = places.stream().map(MapDto.Response::entityToDto).collect(Collectors.toList());
         return placeResponseList;
+    }
+
+    public PageDto<Place, MapDto.Response> searchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {
+        Page<Place> placePage = placeRepository.getPageSearchPlaceByName(mapSearch, pageable);
+        Function<Place,MapDto.Response> fn = (entity -> entityToDto(entity));
+        PageDto<Place, MapDto.Response> mapResponsePage = new PageDto(placePage, fn);
+
+        return mapResponsePage;
     }
 }

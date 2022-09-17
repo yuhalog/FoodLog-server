@@ -28,9 +28,21 @@ public class MapDto {
 
         private String category;
 
+        private Double averageRating;
+
         private Double latitude;
 
         private Double longitude;
+
+        public Response(Long placeId, Long placePostId, String name, String category, Double averageRating, Double latitude, Double longitude) {
+            this.placeId = placeId;
+            this.placePostId = placePostId;
+            this.name = name;
+            this.category = category;
+            this.averageRating = averageRating;
+            this.latitude = latitude;
+            this.longitude = longitude;
+        }
 
         public static Response entityToDto(Place place) {
             return Response.builder()
@@ -49,7 +61,24 @@ public class MapDto {
     @AllArgsConstructor
     @NoArgsConstructor
     @Data
-    public static class Request {
+    public static class Search {
+
+        private Double longitude;
+
+        private Double latitude;
+
+        private Double longitudeDelta;
+
+        private Double latitudeDelta;
+
+        private String query;
+    }
+
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Data
+    public static class Filter {
 
         private Double longitude;
 

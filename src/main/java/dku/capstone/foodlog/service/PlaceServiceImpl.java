@@ -115,10 +115,10 @@ public class PlaceServiceImpl implements PlaceService{
         return placeResponseList;
     }
 
-    public PageDto<Place, MapDto.Response> searchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {
+    public PageDto searchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {
         Page<Place> placePage = placeRepository.getPageSearchPlaceByName(mapSearch, pageable);
         Function<Place,MapDto.Response> fn = (entity -> entityToDto(entity));
-        PageDto<Place, MapDto.Response> mapResponsePage = new PageDto(placePage, fn);
+        PageDto mapResponsePage = new PageDto(placePage, fn);
 
         return mapResponsePage;
     }

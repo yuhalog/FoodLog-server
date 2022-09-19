@@ -122,4 +122,12 @@ public class PlaceServiceImpl implements PlaceService{
 
         return mapResponsePage;
     }
+
+    public PageDto searchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable) {
+        Page<Place> placePage = placeRepository.getPageSearchPlaceByAddress(mapSearch, pageable);
+        Function<Place,MapDto.Response> fn = (entity -> entityToDto(entity));
+        PageDto mapResponsePage = new PageDto(placePage, fn);
+
+        return mapResponsePage;
+    }
 }

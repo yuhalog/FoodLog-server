@@ -66,7 +66,7 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                 .fetch();
     }
 
-    private BooleanExpression placeNameLike(String name) {
+    private BooleanExpression placeNameContains(String name) {
         return name != null? place.name.contains(name) : null;
     }
 
@@ -77,7 +77,7 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                 .where(
                         coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
                         coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
-                        placeNameLike(mapSearch.getQuery())
+                        placeNameContains(mapSearch.getQuery())
                 )
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -92,7 +92,7 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                 .where(
                         coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
                         coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
-                        placeNameLike(mapSearch.getQuery())
+                        placeNameContains(mapSearch.getQuery())
                 )
                 .fetchOne();
     }
@@ -100,6 +100,42 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
     public Page<Place> getPageSearchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {
         List<Place> content = searchPlaceByName(mapSearch, pageable);
         Long count = getCountSearchPlaceByName(mapSearch);
+        return new PageImpl<>(content, pageable, count);
+    }
+
+    private BooleanExpression placeAddressContains(String address) {
+        return address != null? place.address.contains(address) : null;
+    }
+
+    private List<Place> searchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable) {
+        return queryFactory
+                .selectFrom(place)
+                .where(
+                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        placeAddressContains(mapSearch.getQuery())
+                )
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
+    private Long getCountSearchPlaceByAddress(MapDto.Search mapSearch) {
+
+        return queryFactory
+                .select(place.count())
+                .from(place)
+                .where(
+                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        placeAddressContains(mapSearch.getQuery())
+                )
+                .fetchOne();
+    }
+
+    public Page<Place> getPageSearchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable) {
+        List<Place> content = searchPlaceByAddress(mapSearch, pageable);
+        Long count = getCountSearchPlaceByAddress(mapSearch);
         return new PageImpl<>(content, pageable, count);
     }
 

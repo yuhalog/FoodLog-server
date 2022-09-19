@@ -1,11 +1,13 @@
 package dku.capstone.foodlog.dto;
 
+import lombok.Data;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Data
 public class PageDto<ENTITY, DTO> {
 
     private List<DTO> content;

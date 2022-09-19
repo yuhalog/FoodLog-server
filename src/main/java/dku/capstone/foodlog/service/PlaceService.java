@@ -15,4 +15,6 @@ public interface PlaceService {
     List<MapDto.Response> searchPlaceWithFilter(MapDto.Filter mapFilterRequest);
 
     PageDto searchPlaceByName(MapDto.Search mapSearch, Pageable pageable);
+
+    PageDto searchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable);
 }

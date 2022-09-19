@@ -13,4 +13,6 @@ public interface PlaceRepositoryCustom {
 
     Page<Place> getPageSearchPlaceByName(MapDto.Search mapSearch, Pageable pageable);
 
+    Page<Place> getPageSearchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable);
+
 }

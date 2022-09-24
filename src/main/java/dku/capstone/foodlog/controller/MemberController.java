@@ -29,7 +29,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @ApiOperation(value = "", notes = "로그인")
-    @PostMapping("/v1/member/login")
+    @PostMapping("/v1/login")
     public ResponseEntity<LoginResponse> login(
             @RequestBody LoginRequest request) {
         LoginResponse response = memberService.login(request);
@@ -37,7 +37,7 @@ public class MemberController {
     }
 
     @ApiOperation(value = "", notes = "회원가입")
-    @PostMapping("/v1/member/join")
+    @PostMapping("/v1/join")
     public ResponseEntity<LoginResponse> join(
             @RequestPart(value = "memberJoinDto") MemberJoinRequest request,
             @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {

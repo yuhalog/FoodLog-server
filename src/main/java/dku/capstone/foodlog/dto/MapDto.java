@@ -28,7 +28,7 @@ public class MapDto {
 
         private String category;
 
-        private Double averageRating;
+        private Float averageRating;
 
         private String address;
 
@@ -36,7 +36,7 @@ public class MapDto {
 
         private Double longitude;
 
-        public Response(Long placeId, Long placePostId, String name, String category, Double averageRating, String address, Double latitude, Double longitude) {
+        public Response(Long placeId, Long placePostId, String name, String category, Float averageRating, String address, Double latitude, Double longitude) {
             this.placeId = placeId;
             this.placePostId = placePostId;
             this.name = name;
@@ -54,6 +54,7 @@ public class MapDto {
                     .postId(place.getPostList().get(0).getId())
                     .name(place.getName())
                     .category(place.getCategory().getValue())
+                    .averageRating(place.getPlacePost().getAverageRating())
                     .address(place.getAddress())
                     .latitude(place.getLatitude())
                     .longitude(place.getLongitude())

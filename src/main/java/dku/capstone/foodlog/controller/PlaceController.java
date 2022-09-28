@@ -54,4 +54,18 @@ public class PlaceController {
 
         return placeResponsePageDto;
     }
+
+    @GetMapping("/v1/place/recommend")
+    public PageDto recommend(
+            @RequestParam(defaultValue = "") String query,
+            @RequestParam(defaultValue = "") Double latitude,
+            @RequestParam(defaultValue = "") Double latitudeDelta,
+            @RequestParam(defaultValue = "") Double longitude,
+            @RequestParam(defaultValue = "") Double longitudeDelta,
+            @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
+        MapDto.Search searchRequest = new MapDto.Search(longitude, latitude, longitudeDelta, latitudeDelta, query);
+        PageDto placeResponsePageDto = placeService.searchPlaceByAddress(searchRequest, pageable);
+
+        return placeResponsePageDto;
+    }
 }

@@ -1,7 +1,10 @@
 package dku.capstone.foodlog.repository;
 
+import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
+import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.MapDto;
+import dku.capstone.foodlog.dto.RecommendDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -14,5 +17,7 @@ public interface PlaceRepositoryCustom {
     Page<Place> getPageSearchPlaceByName(MapDto.Search mapSearch, Pageable pageable);
 
     Page<Place> getPageSearchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable);
+
+    List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member);
 
 }

@@ -4,18 +4,25 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
+import dku.capstone.foodlog.constant.Gender;
+import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
+import dku.capstone.foodlog.domain.Post;
 import dku.capstone.foodlog.dto.MapDto;
+import dku.capstone.foodlog.dto.RecommendDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import static dku.capstone.foodlog.domain.QMember.member;
 import static dku.capstone.foodlog.domain.QPlace.place;
 import static dku.capstone.foodlog.domain.QPlacePost.placePost;
+import static dku.capstone.foodlog.domain.QPost.post;
 
 @RequiredArgsConstructor
 @Repository
@@ -137,6 +144,29 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         List<Place> content = searchPlaceByAddress(mapSearch, pageable);
         Long count = getCountSearchPlaceByAddress(mapSearch);
         return new PageImpl<>(content, pageable, count);
+    }
+
+    private BooleanExpression placePostPurposeEq(FoodPurpose foodPurpose) {
+        return foodPurpose != null? placePost.purpose.eq(foodPurpose) : null;
+    }
+
+    private BooleanExpression memberAgeBetween(LocalDate birthday) {
+        return birthday != null? member.birthday.between(birthday.minusYears(5), birthday.plusYears(5)) : null;
+    }
+
+    private BooleanExpression memberGenderEq(Gender gender) {
+        return gender != null? member.gender.eq(gender) : null;
+    }
+
+    public List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member) {
+        return queryFactory
+                .selectFrom(post)
+                .where(
+                        placePostPurposeEq(recommendRequest.getFoodPurpose()),
+                        memberAgeBetween(member.getBirthday()),
+                        memberGenderEq(member.getGender())
+                )
+                .fetch();
     }
 
 }

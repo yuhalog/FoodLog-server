@@ -1,12 +1,11 @@
 package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.constant.FoodCategory;
+import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.domain.PlacePost;
-import dku.capstone.foodlog.dto.MapDto;
-import dku.capstone.foodlog.dto.PageDto;
-import dku.capstone.foodlog.dto.PlaceDto;
-import dku.capstone.foodlog.dto.PostDto;
+import dku.capstone.foodlog.domain.Post;
+import dku.capstone.foodlog.dto.*;
 import dku.capstone.foodlog.dto.request.KakaoPlaceRequest;
 import dku.capstone.foodlog.dto.response.KakaoPlaceResponse;
 import dku.capstone.foodlog.repository.PlaceRepository;
@@ -129,5 +128,12 @@ public class PlaceServiceImpl implements PlaceService{
         PageDto mapResponsePage = new PageDto(placePage, fn);
 
         return mapResponsePage;
+    }
+
+    public PageDto recommendPost(RecommendDto.Request request, Member member, Pageable pageable) {
+        Page<Post> postPage = placeRepository.getPageRecommendPost(request, member, pageable);
+        Function<Post,PostDto.Summary> fn = (entity -> PostDto.Summary.entityToDto(entity));
+
+        return new PageDto(postPage, fn);
     }
 }

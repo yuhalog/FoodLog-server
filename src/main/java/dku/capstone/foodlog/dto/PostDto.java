@@ -37,6 +37,17 @@ public class PostDto {
             this.rating = post.getRating();
             this.purpose = post.getPurpose().getValue();
         }
+
+
+        public static Summary entityToDto(Post post) {
+            return Summary.builder()
+                    .postId(post.getId())
+                    .picture(post.getPictureList().get(0).getPictureUrl())
+                    .review(post.getReview())
+                    .rating(post.getRating())
+                    .purpose(post.getPurpose().getValue())
+                    .build();
+        }
     }
 
     @Builder

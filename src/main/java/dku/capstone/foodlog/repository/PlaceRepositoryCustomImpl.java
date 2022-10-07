@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
@@ -19,7 +20,6 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
-import static dku.capstone.foodlog.domain.QMember.member;
 import static dku.capstone.foodlog.domain.QPlace.place;
 import static dku.capstone.foodlog.domain.QPlacePost.placePost;
 import static dku.capstone.foodlog.domain.QPost.post;
@@ -147,18 +147,18 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
     }
 
     private BooleanExpression placePostPurposeEq(FoodPurpose foodPurpose) {
-        return foodPurpose != null? placePost.purpose.eq(foodPurpose) : null;
+        return foodPurpose != null? post.place.placePost.purpose.eq(foodPurpose) : null;
     }
 
     private BooleanExpression memberAgeBetween(LocalDate birthday) {
-        return birthday != null? member.birthday.between(birthday.minusYears(5), birthday.plusYears(5)) : null;
+        return birthday != null? post.member.birthday.between(birthday.minusYears(5), birthday.plusYears(5)) : null;
     }
 
     private BooleanExpression memberGenderEq(Gender gender) {
-        return gender != null? member.gender.eq(gender) : null;
+        return gender != null? post.member.gender.eq(gender) : null;
     }
 
-    public List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member) {
+    private List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member) {
         return queryFactory
                 .selectFrom(post)
                 .where(
@@ -166,7 +166,26 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                         memberAgeBetween(member.getBirthday()),
                         memberGenderEq(member.getGender())
                 )
+//                .orderBy(NumberExpression.random().asc())
                 .fetch();
+    }
+
+    private Long getCountRecommendPost(RecommendDto.Request recommendRequest, Member member) {
+        return queryFactory
+                .select(post.count())
+                .from(post)
+                .where(
+                        placePostPurposeEq(recommendRequest.getFoodPurpose()),
+                        memberAgeBetween(member.getBirthday()),
+                        memberGenderEq(member.getGender())
+                )
+                .fetchOne();
+    }
+
+    public Page<Post> getPageRecommendPost(RecommendDto.Request recommendRequest, Member member, Pageable pageable) {
+        List<Post> content = recommendPost(recommendRequest, member);
+        Long count = getCountRecommendPost(recommendRequest, member);
+        return new PageImpl<>(content, pageable, count);
     }
 
 }

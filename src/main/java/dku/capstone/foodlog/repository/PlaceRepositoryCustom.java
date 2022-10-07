@@ -18,6 +18,6 @@ public interface PlaceRepositoryCustom {
 
     Page<Place> getPageSearchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable);
 
-    List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member);
+    Page<Post> getPageRecommendPost(RecommendDto.Request recommendRequest, Member member, Pageable pageable);
 
 }

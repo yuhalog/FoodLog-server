@@ -46,13 +46,31 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         return placePost.postCount.gt(0);
     }
 
-    private BooleanExpression coordinateBetween(Double coordinate, Double coordinateDelta) {
+    private BooleanExpression latitudeBetween(Double latitude, Double latitudeDelta) {
 
-        if (coordinate!=null || coordinateDelta!=null) {
-            Double start = coordinate - (coordinateDelta/2);
-            Double end = coordinate + (coordinateDelta/2);
+        if (latitude != null) {
+            if (latitudeDelta == null) {
+                latitudeDelta = 0.05;
+            }
+            Double start = latitude - (latitudeDelta/2);
+            Double end = latitude + (latitudeDelta/2);
 
-            return placePost.averageRating.between(start, end);
+            return place.latitude.between(start, end);
+        } else {
+            return null;
+        }
+    }
+
+    private BooleanExpression longitudeBetween(Double longitude, Double longitudeDelta) {
+
+        if (longitude != null) {
+            if (longitudeDelta == null) {
+                longitudeDelta = 0.05;
+            }
+            Double start = longitude - (longitudeDelta/2);
+            Double end = longitude + (longitudeDelta/2);
+
+            return place.longitude.between(start, end);
         } else {
             return null;
         }
@@ -67,8 +85,8 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                         purposeEq(mapFilter.getPurposeList()),
                         categoryEq(mapFilter.getCategoryList()),
                         ratingGoe(mapFilter.getRating()),
-                        coordinateBetween(mapFilter.getLatitude(), mapFilter.getLatitudeDelta()),
-                        coordinateBetween(mapFilter.getLongitude(), mapFilter.getLongitudeDelta()))
+                        latitudeBetween(mapFilter.getLatitude(), mapFilter.getLatitudeDelta()),
+                        longitudeBetween(mapFilter.getLongitude(), mapFilter.getLongitudeDelta()))
                 .join(place.placePost, placePost)
                 .fetch();
     }
@@ -82,8 +100,8 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         return queryFactory
                 .selectFrom(place)
                 .where(
-                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
-                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
                         placeNameContains(mapSearch.getQuery())
                 )
                 .offset(pageable.getOffset())
@@ -97,8 +115,8 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                 .select(place.count())
                 .from(place)
                 .where(
-                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
-                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
                         placeNameContains(mapSearch.getQuery())
                 )
                 .fetchOne();
@@ -118,8 +136,8 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         return queryFactory
                 .selectFrom(place)
                 .where(
-                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
-                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
                         placeAddressContains(mapSearch.getQuery())
                 )
                 .offset(pageable.getOffset())
@@ -133,8 +151,8 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                 .select(place.count())
                 .from(place)
                 .where(
-                        coordinateBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
-                        coordinateBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                        latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                        longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
                         placeAddressContains(mapSearch.getQuery())
                 )
                 .fetchOne();

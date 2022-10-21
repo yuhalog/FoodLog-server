@@ -24,6 +24,8 @@ public class CommentDto {
 
         private Long commentId;
 
+        private Long memberId;
+
         private String memberProfileImage;
 
         private String username;
@@ -34,6 +36,7 @@ public class CommentDto {
 
         public Response(Comment comment) {
             this.commentId = comment.getId();
+            this.memberId = comment.getMember().getId();
             this.memberProfileImage = comment.getMember().getProfilePicture();
             this.username = comment.getMember().getUsername();
             this.comment = comment.getContent();
@@ -43,6 +46,7 @@ public class CommentDto {
         public static Response entityToDto(Comment comment) {
             return Response.builder()
                     .commentId(comment.getId())
+                    .memberId(comment.getMember().getId())
                     .memberProfileImage(comment.getMember().getProfilePicture())
                     .username(comment.getMember().getUsername())
                     .comment(comment.getContent())

@@ -62,6 +62,9 @@ public class PostDto {
         @ApiModelProperty(example = "https://foodlogstorage.s3.ap-northeast-2.amazonaws.com/d857688e-0ed8-4200-8aa0-5b770e30e016.jpeg")
         private String memberPicture;
 
+        @ApiModelProperty(example = "https://foodlogstorage.s3.ap-northeast-2.amazonaws.com/d857688e-0ed8-4200-8aa0-5b770e30e016.jpeg")
+        private Long memberId;
+
         @ApiModelProperty(example = "test1")
         private String member;
 
@@ -86,6 +89,7 @@ public class PostDto {
 
         public Response(Post post) {
             this.postId = post.getId();
+            this.memberId = post.getMember().getId();
             this.memberPicture = post.getMember().getProfilePicture();
             this.member = post.getMember().getUsername();
             this.pictures = post.getPictureList().stream().map(PostPicture::getPictureUrl).collect(Collectors.toList());

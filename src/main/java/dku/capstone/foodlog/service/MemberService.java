@@ -80,12 +80,14 @@ public class MemberService {
     /**
      * 프로필 설정 - 조회
      */
-    public MemberDto getProfile(Long memberId) {
+    public MemberDto getProfile(Long memberId, Member member) {
 
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
 
-        return new MemberDto(findMember);
+        boolean isFollowing = member.getSubscribers().contains(findMember);
+
+        return new MemberDto(findMember, isFollowing);
     }
 
     /**

@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.controller;
 
+import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;
 import dku.capstone.foodlog.dto.response.MemberPageResponse;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -83,8 +85,10 @@ public class MemberController {
 
     @ApiOperation(value = "", notes = "프로필 조회")
     @GetMapping("/v1/member/profile/{id}")
-    public ResponseEntity<?> getMemberProfile(@PathVariable("id") Long memberId){
-        return new ResponseEntity<>(memberService.getProfile(memberId), HttpStatus.OK);
+    public ResponseEntity<?> getMemberProfile(
+            @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
+            @PathVariable("id") Long memberId){
+        return new ResponseEntity<>(memberService.getProfile(memberId, member), HttpStatus.OK);
     }
 
     @GetMapping("/v1/member/list")

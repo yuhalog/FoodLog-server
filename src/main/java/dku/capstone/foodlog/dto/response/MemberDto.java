@@ -16,13 +16,15 @@ public class MemberDto {
     private LocalDate birthday;
     private String selfBio;
     private String profilePicture;
+    private boolean isFollowing;
 
-    public MemberDto(Member member) {
+    public MemberDto(Member member, boolean isFollowing) {
         this.memberId = member.getId();
         this.email = member.getEmail();
         this.username = member.getUsername();
         this.birthday = member.getBirthday();
         this.selfBio = member.getSelfBio();
         this.profilePicture = member.getProfilePicture();
+        this.isFollowing = isFollowing;
     }
 }

@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.controller;
 
 import dku.capstone.foodlog.domain.Member;
+import dku.capstone.foodlog.dto.PageDto;
 import dku.capstone.foodlog.dto.request.SubscribeRequest;
 import dku.capstone.foodlog.dto.response.MemberPageResponse;
 import dku.capstone.foodlog.service.SubscribeService;
@@ -40,11 +41,11 @@ public class SubscribeController {
     }
 
     @GetMapping("/v1/subscribe/follower/{id}")
-    public ResponseEntity<Page<MemberPageResponse>> getFollowerList(
+    public ResponseEntity<PageDto> getFollowerList(
             @PathVariable("id") Long memberId,
             @PageableDefault(size = 12) Pageable pageable,
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member) {
-        Page<MemberPageResponse> followerList = subscribeService.getFollowerList(memberId, pageable);
+        PageDto followerList = subscribeService.getFollowerList(memberId, pageable);
         return new ResponseEntity<>(followerList, HttpStatus.OK);
     }
 

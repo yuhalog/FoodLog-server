@@ -2,6 +2,7 @@ package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Subscribe;
+import dku.capstone.foodlog.dto.PageDto;
 import dku.capstone.foodlog.dto.request.SubscribeRequest;
 import dku.capstone.foodlog.dto.response.MemberPageResponse;
 import dku.capstone.foodlog.repository.MemberRepository;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 @Transactional
 @RequiredArgsConstructor
@@ -60,12 +62,13 @@ public class SubscribeService {
 //        member.getSubscribers().remove(subscribe);
     }
 
-    public Page<MemberPageResponse> getFollowerList (Long memberId, Pageable pageable) {
+    public PageDto getFollowerList (Long memberId, Pageable pageable) {
         Member member = getMemberById(memberId);
         Page<Subscribe> subscribers = subscribeRepository.findBySubscriber(member, pageable);
-        Page<MemberPageResponse> followerList = subscribers.map(entity -> new MemberPageResponse(entity));
+        Function<Subscribe, MemberPageResponse> fn = (entity -> MemberPageResponse.FollowerResponse(entity));
+        PageDto followerResponse = new PageDto(subscribers, fn);
 
-        return followerList;
+        return followerResponse;
     }
 
     public Page<MemberPageResponse> getFollowingList (Long memberId, Pageable pageable) {

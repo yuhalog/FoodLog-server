@@ -19,7 +19,7 @@ public class Subscribe extends BaseTime{
     private Member member;
 
     @ManyToOne
-    @JoinColumn(name = "subscribe")
+    @JoinColumn(name = "subscriber")
     private Member subscriber;
 
     @Builder

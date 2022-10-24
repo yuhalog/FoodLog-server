@@ -37,7 +37,7 @@ public class JwtUtils {
      * 헤더에서 토큰값 가져오기
      */
     public String getJwtByHeader(HttpServletRequest request) {
-        return request.getHeader("ACCESS-TOKEN");
+        return request.getHeader("Authorization");
     }
 
     /**

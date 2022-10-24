@@ -8,10 +8,8 @@ import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("classpath:application-aws.yml")
 public class AwsS3Config {
     @Value("${cloud.aws.credentials.access-key}")
     private String accessKey;

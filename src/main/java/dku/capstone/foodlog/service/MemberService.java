@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.Member;
+import dku.capstone.foodlog.domain.Subscribe;
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;
 import dku.capstone.foodlog.dto.response.MemberPageResponse;
@@ -8,6 +9,7 @@ import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.dto.response.MemberDto;
 import dku.capstone.foodlog.repository.MemberRepository;
+import dku.capstone.foodlog.repository.SubscribeRepository;
 import dku.capstone.foodlog.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -26,6 +28,7 @@ import java.util.NoSuchElementException;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final SubscribeRepository subscribeRepository;
     private final JwtUtils jwtUtils;
     private final AwsS3Service awsS3Service;
 
@@ -85,7 +88,12 @@ public class MemberService {
         Member findMember = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
 
-        boolean isFollowing = member.getSubscribers().contains(findMember);
+        Subscribe subscribe = subscribeRepository.findByMemberAndSubscriber(member, findMember);
+
+        boolean isFollowing = false;
+        if (subscribe != null) {
+            isFollowing = true;
+        }
 
         return new MemberDto(findMember, isFollowing);
     }

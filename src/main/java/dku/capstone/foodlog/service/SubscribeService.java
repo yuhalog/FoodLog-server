@@ -33,8 +33,8 @@ public class SubscribeService {
     /**
      * 구독
      */
-    public Long subscribe(SubscribeRequest request, Member member) {
-        Long subscribeId = request.getSubscribeId();
+    public Long subscribe(SubscribeRequest subscribeRequest, Member member) {
+        Long subscribeId = subscribeRequest.getSubscribeId();
 
         Member subscriber = memberRepository.findById(subscribeId)
                 .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
@@ -45,6 +45,7 @@ public class SubscribeService {
                 .build();
 
         Subscribe saveSubscribe = subscribeRepository.save(subscribe);
+        member.getSubscribers().add(saveSubscribe);
 
         return saveSubscribe.getId();
     }
@@ -59,7 +60,7 @@ public class SubscribeService {
         Subscribe subscribe = subscribeRepository.findByMemberAndSubscriber(member, subscriber);
 
         subscribeRepository.delete(subscribe);
-//        member.getSubscribers().remove(subscribe);
+        member.getSubscribers().remove(subscribe);
     }
 
     public PageDto getFollowerList (Long memberId, Pageable pageable) {

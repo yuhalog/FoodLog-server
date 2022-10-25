@@ -38,7 +38,6 @@ public class PostDto {
             this.purpose = post.getPurpose().getValue();
         }
 
-
         public static Summary entityToDto(Post post) {
             return Summary.builder()
                     .postId(post.getId())
@@ -99,6 +98,22 @@ public class PostDto {
             this.date = post.getDate().toString();
             this.place = new PlaceDto.Response(post.getPlace());
             this.comment = post.getCommentList().stream().map(CommentDto.Response::entityToDto).collect(Collectors.toList());
+        }
+
+        public static Response entityToDto(Post post) {
+            return Response.builder()
+                    .postId(post.getId())
+                    .memberId(post.getMember().getId())
+                    .member(post.getMember().getUsername())
+                    .memberPicture(post.getMember().getProfilePicture())
+                    .pictures(post.getPictureList().stream().map(PostPicture::getPictureUrl).collect(Collectors.toList()))
+                    .rating(post.getRating())
+                    .review(post.getReview())
+                    .purpose(post.getPurpose().getValue())
+                    .date(post.getDate().toString())
+                    .place(new PlaceDto.Response(post.getPlace()))
+                    .comment(post.getCommentList().stream().map(CommentDto.Response::entityToDto).collect(Collectors.toList()))
+                    .build();
         }
     }
 

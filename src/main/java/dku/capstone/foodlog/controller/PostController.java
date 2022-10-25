@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.controller;
 
 import dku.capstone.foodlog.domain.Member;
+import dku.capstone.foodlog.dto.PageDto;
 import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.service.AwsS3Service;
 import dku.capstone.foodlog.service.PostService;
@@ -11,6 +12,9 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -69,5 +73,13 @@ public class PostController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/v1/post/subscriber")
+    public PageDto recommendPost(
+            @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
+            @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
+        PageDto subscriberPosts = postService.getSubscriberPosts(member, pageable);
+
+        return subscriberPosts;
+    }
 }
 

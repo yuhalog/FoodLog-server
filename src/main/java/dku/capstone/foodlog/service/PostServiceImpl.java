@@ -1,10 +1,13 @@
 package dku.capstone.foodlog.service;
 
 import dku.capstone.foodlog.domain.*;
+import dku.capstone.foodlog.dto.PageDto;
 import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,6 +15,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.function.Function;
 
 @Service
 @Transactional(readOnly = true)
@@ -80,5 +84,12 @@ public class PostServiceImpl implements PostService {
         postPictureService.deletePostPictureList(post.getPictureList());
         placePostService.removePlacePost(post.getPlace().getPlacePost());
         postRepository.delete(post);
+    }
+
+    public PageDto getSubscriberPosts(Member member, Pageable pageable) {
+        Page<Post> subscribePosts = postRepository.getPageSubscribePosts(member, pageable);
+        Function<Post,PostDto.Response> fn = (entity -> PostDto.Response.entityToDto(entity));
+
+        return new PageDto(subscribePosts, fn);
     }
 }

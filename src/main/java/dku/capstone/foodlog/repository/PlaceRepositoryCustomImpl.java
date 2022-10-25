@@ -1,7 +1,6 @@
 package dku.capstone.foodlog.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
@@ -177,31 +176,41 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
     }
 
     private List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member) {
-        return queryFactory
-                .selectFrom(post)
-                .where(
-                        placePostPurposeEq(recommendRequest.getFoodPurpose()),
-                        memberAgeBetween(member.getBirthday()),
-                        memberGenderEq(member.getGender())
-                )
-//                .orderBy(NumberExpression.random().asc())
-                .fetch();
-    }
-
-    private Long getCountRecommendPost(RecommendDto.Request recommendRequest, Member member) {
-        return queryFactory
-                .select(post.count())
+        List<Long> newPosts = queryFactory
+                .select(post.id.max())
                 .from(post)
                 .where(
                         placePostPurposeEq(recommendRequest.getFoodPurpose()),
                         memberAgeBetween(member.getBirthday()),
                         memberGenderEq(member.getGender())
                 )
+                .groupBy(place)
+                .fetch();
+
+        return queryFactory
+                .selectFrom(post)
+                .where(post.id.in(
+                        newPosts
+                ))
+                .fetch();
+    }
+
+    private Long getCountRecommendPost(RecommendDto.Request recommendRequest, Member member) {
+        return queryFactory
+                .select(post.id.count())
+                .from(post)
+                .where(
+                        placePostPurposeEq(recommendRequest.getFoodPurpose()),
+                        memberAgeBetween(member.getBirthday()),
+                        memberGenderEq(member.getGender())
+                )
+                .groupBy(place)
                 .fetchOne();
     }
 
     public Page<Post> getPageRecommendPost(RecommendDto.Request recommendRequest, Member member, Pageable pageable) {
         List<Post> content = recommendPost(recommendRequest, member);
+        System.out.println("content"+ content.size());
         Long count = getCountRecommendPost(recommendRequest, member);
         return new PageImpl<>(content, pageable, count);
     }

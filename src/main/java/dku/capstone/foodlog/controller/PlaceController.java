@@ -63,7 +63,7 @@ public class PlaceController {
     public PageDto recommendPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestParam(defaultValue = "") FoodPurpose foodPurpose,
-            @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size=10, direction = Sort.Direction.DESC) Pageable pageable) {
         RecommendDto.Request recommendRequest = new RecommendDto.Request(foodPurpose);
         PageDto placeResponsePageDto = placeService.recommendPost(recommendRequest, member, pageable);
 

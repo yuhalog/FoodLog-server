@@ -1,6 +1,7 @@
 package dku.capstone.foodlog.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Repository;
 import java.time.LocalDate;
 import java.util.List;
 
+import static dku.capstone.foodlog.domain.QMenu.menu;
 import static dku.capstone.foodlog.domain.QPlace.place;
 import static dku.capstone.foodlog.domain.QPlacePost.placePost;
 import static dku.capstone.foodlog.domain.QPost.post;
@@ -147,14 +149,14 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
     private Long getCountSearchPlaceByAddress(MapDto.Search mapSearch) {
 
         return queryFactory
-                .select(place.count())
-                .from(place)
-                .where(
-                        latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
-                        longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
-                        placeAddressContains(mapSearch.getQuery())
-                )
-                .fetchOne();
+            .select(place.count())
+            .from(place)
+            .where(
+                latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                placeAddressContains(mapSearch.getQuery())
+            )
+            .fetchOne();
     }
 
     public Page<Place> getPageSearchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable) {
@@ -175,44 +177,96 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         return gender != null? post.member.gender.eq(gender) : null;
     }
 
-    private List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member) {
+    private List<Post> recommendPost(RecommendDto.Request recommendRequest, Member member, Pageable pageable) {
         List<Long> newPosts = queryFactory
-                .select(post.id.max())
-                .from(post)
-                .where(
-                        placePostPurposeEq(recommendRequest.getFoodPurpose()),
-                        memberAgeBetween(member.getBirthday()),
-                        memberGenderEq(member.getGender())
-                )
-                .groupBy(place)
-                .fetch();
+            .select(post.id.max())
+            .from(post)
+            .where(
+                placePostPurposeEq(recommendRequest.getFoodPurpose()),
+                memberAgeBetween(member.getBirthday()),
+                memberGenderEq(member.getGender())
+            )
+            .groupBy(place)
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
 
         return queryFactory
-                .selectFrom(post)
-                .where(post.id.in(
-                        newPosts
-                ))
-                .fetch();
+            .selectFrom(post)
+            .where(post.id.in(
+                newPosts
+            ))
+            .fetch();
     }
 
     private Long getCountRecommendPost(RecommendDto.Request recommendRequest, Member member) {
+        List<Long> newPosts = queryFactory
+            .select(post.id.max())
+            .from(post)
+            .where(
+                placePostPurposeEq(recommendRequest.getFoodPurpose()),
+                memberAgeBetween(member.getBirthday()),
+                memberGenderEq(member.getGender())
+            )
+            .groupBy(place)
+            .fetch();
+
         return queryFactory
-                .select(post.id.count())
-                .from(post)
-                .where(
-                        placePostPurposeEq(recommendRequest.getFoodPurpose()),
-                        memberAgeBetween(member.getBirthday()),
-                        memberGenderEq(member.getGender())
-                )
-                .groupBy(place)
-                .fetchOne();
+            .select(post.count())
+            .from(post)
+            .where(post.id.in(
+                newPosts
+            ))
+            .fetchOne();
     }
 
     public Page<Post> getPageRecommendPost(RecommendDto.Request recommendRequest, Member member, Pageable pageable) {
-        List<Post> content = recommendPost(recommendRequest, member);
-        System.out.println("content"+ content.size());
+        List<Post> content = recommendPost(recommendRequest, member, pageable);
         Long count = getCountRecommendPost(recommendRequest, member);
         return new PageImpl<>(content, pageable, count);
     }
 
+    private BooleanExpression menuFoodCategoryContains(String name) {
+        return name != null? menu.food.contains(name) : null;
+    }
+
+    private List<Place> searchPlaceByMenu(MapDto.Search mapSearch, Pageable pageable) {
+        return queryFactory
+            .selectFrom(place)
+            .where(
+                latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                place.category.in(
+                        JPAExpressions
+                            .select(menu.foodCategory)
+                            .from(menu)
+                            .where(menuFoodCategoryContains(mapSearch.getQuery()))
+                    )
+            )
+            .offset(pageable.getOffset())
+            .limit(pageable.getPageSize())
+            .fetch();
+    }
+
+    private Long getCountSearchPlaceByMenu(MapDto.Search mapSearch) {
+        return queryFactory
+            .select(place.count())
+            .from(place)
+            .where(
+                latitudeBetween(mapSearch.getLatitude(), mapSearch.getLatitudeDelta()),
+                longitudeBetween(mapSearch.getLongitude(), mapSearch.getLongitudeDelta()),
+                place.category.in(
+                    JPAExpressions
+                        .select(menu.foodCategory)
+                        .from(menu)
+                        .where(menuFoodCategoryContains(mapSearch.getQuery()))
+            ))
+            .fetchOne();
+    }
+
+    public Page<Place> getPageSearchPlaceByMenu(MapDto.Search mapSearch, Pageable pageable) {
+        List<Place> content = searchPlaceByMenu(mapSearch, pageable);
+        Long count = getCountSearchPlaceByMenu(mapSearch);
+        return new PageImpl<>(content, pageable, count);
+    }
 }

@@ -20,6 +20,8 @@ public interface PlaceService {
 
     PageDto searchPlaceByAddress(MapDto.Search mapSearch, Pageable pageable);
 
+    PageDto searchPlaceByMenu(MapDto.Search mapSearch, Pageable pageable);
+
     PageDto recommendPost(RecommendDto.Request request, Member member, Pageable pageable);
 
 }

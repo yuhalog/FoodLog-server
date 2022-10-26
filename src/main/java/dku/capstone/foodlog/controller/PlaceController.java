@@ -38,7 +38,7 @@ public class PlaceController {
             @RequestParam(defaultValue = "") Double latitudeDelta,
             @RequestParam(defaultValue = "") Double longitude,
             @RequestParam(defaultValue = "") Double longitudeDelta,
-            @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size=10, direction = Sort.Direction.DESC) Pageable pageable) {
         MapDto.Search searchRequest = new MapDto.Search(longitude, latitude, longitudeDelta, latitudeDelta, query);
         PageDto placeResponsePageDto = placeService.searchPlaceByName(searchRequest, pageable);
 
@@ -52,7 +52,7 @@ public class PlaceController {
             @RequestParam(defaultValue = "") Double latitudeDelta,
             @RequestParam(defaultValue = "") Double longitude,
             @RequestParam(defaultValue = "") Double longitudeDelta,
-            @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size=10, direction = Sort.Direction.DESC) Pageable pageable) {
         MapDto.Search searchRequest = new MapDto.Search(longitude, latitude, longitudeDelta, latitudeDelta, query);
         PageDto placeResponsePageDto = placeService.searchPlaceByAddress(searchRequest, pageable);
 
@@ -63,9 +63,23 @@ public class PlaceController {
     public PageDto recommendPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestParam(defaultValue = "") FoodPurpose foodPurpose,
-            @PageableDefault(size=10, direction = Sort.Direction.DESC) Pageable pageable) {
+            @PageableDefault(size=10) Pageable pageable) {
         RecommendDto.Request recommendRequest = new RecommendDto.Request(foodPurpose);
         PageDto placeResponsePageDto = placeService.recommendPost(recommendRequest, member, pageable);
+
+        return placeResponsePageDto;
+    }
+
+    @GetMapping("/v1/place/search/menu")
+    public PageDto searchPlaceByMenu(
+        @RequestParam(defaultValue = "") String query,
+        @RequestParam(defaultValue = "") Double latitude,
+        @RequestParam(defaultValue = "") Double latitudeDelta,
+        @RequestParam(defaultValue = "") Double longitude,
+        @RequestParam(defaultValue = "") Double longitudeDelta,
+        @PageableDefault(size=10) Pageable pageable) {
+        MapDto.Search searchRequest = new MapDto.Search(longitude, latitude, longitudeDelta, latitudeDelta, query);
+        PageDto placeResponsePageDto = placeService.searchPlaceByMenu(searchRequest, pageable);
 
         return placeResponsePageDto;
     }

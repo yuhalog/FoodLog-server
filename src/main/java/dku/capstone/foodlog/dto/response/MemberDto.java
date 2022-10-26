@@ -1,5 +1,6 @@
 package dku.capstone.foodlog.dto.response;
 
+import dku.capstone.foodlog.constant.Gender;
 import dku.capstone.foodlog.domain.Member;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -13,6 +14,7 @@ public class MemberDto {
     private Long memberId;
     private String email;
     private String username;
+    private Gender gender;
     private LocalDate birthday;
     private String selfBio;
     private String profilePicture;
@@ -22,6 +24,7 @@ public class MemberDto {
         this.memberId = member.getId();
         this.email = member.getEmail();
         this.username = member.getUsername();
+        this.gender = member.getGender();
         this.birthday = member.getBirthday();
         this.selfBio = member.getSelfBio();
         this.profilePicture = member.getProfilePicture();

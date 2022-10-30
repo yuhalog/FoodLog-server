@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,12 +31,15 @@ public class PostDto {
 
         private String purpose;
 
+        private PlaceDto.Response place;
+
         public Summary(Post post) {
             this.postId = post.getId();
             this.picture = post.getPictureList().get(0).getPictureUrl();
             this.review = post.getReview();
             this.rating = post.getRating();
             this.purpose = post.getPurpose().getValue();
+            this.place = new PlaceDto.Response(post.getPlace());
         }
 
         public static Summary entityToDto(Post post) {
@@ -45,6 +49,7 @@ public class PostDto {
                     .review(post.getReview())
                     .rating(post.getRating())
                     .purpose(post.getPurpose().getValue())
+                    .place(new PlaceDto.Response(post.getPlace()))
                     .build();
         }
     }
@@ -81,6 +86,9 @@ public class PostDto {
 
         @ApiModelProperty(example = "2022-09-11")
         private String date;
+
+        @ApiModelProperty(example = "2022-09-11")
+        private LocalDate createdDate;
 
         private PlaceDto.Response place;
 

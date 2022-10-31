@@ -39,7 +39,7 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         return !categoryList.isEmpty()? place.category.in(categoryList) : null;
     }
 
-    private BooleanExpression ratingGoe(Integer rating) {
+    private BooleanExpression ratingGoe(Float rating) {
         return rating != null? placePost.averageRating.goe(rating) : null;
     }
 

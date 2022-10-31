@@ -97,7 +97,7 @@ public class MapDto {
 
         private List<FoodCategory> categoryList;
 
-        private Integer rating;
+        private Float rating;
 
     }
 

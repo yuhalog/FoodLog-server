@@ -4,6 +4,7 @@ import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.domain.Place;
 import dku.capstone.foodlog.dto.MapDto;
 import dku.capstone.foodlog.dto.PageDto;
+import dku.capstone.foodlog.dto.PlaceDto;
 import dku.capstone.foodlog.dto.PostDto;
 import dku.capstone.foodlog.dto.RecommendDto;
 import org.springframework.data.domain.Pageable;
@@ -24,4 +25,5 @@ public interface PlaceService {
 
     PageDto recommendPost(RecommendDto.Request request, Member member, Pageable pageable);
 
+    List<PlaceDto.Response> getPlacesByMember(Long memberId);
 }

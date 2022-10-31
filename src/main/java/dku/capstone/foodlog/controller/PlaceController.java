@@ -4,6 +4,7 @@ import dku.capstone.foodlog.constant.FoodPurpose;
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.MapDto;
 import dku.capstone.foodlog.dto.PageDto;
+import dku.capstone.foodlog.dto.PlaceDto;
 import dku.capstone.foodlog.dto.RecommendDto;
 import dku.capstone.foodlog.service.PlaceService;
 import lombok.RequiredArgsConstructor;
@@ -82,5 +83,13 @@ public class PlaceController {
         PageDto placeResponsePageDto = placeService.searchPlaceByMenu(searchRequest, pageable);
 
         return placeResponsePageDto;
+    }
+
+    @GetMapping("/v1/places/{memberId}")
+    public ResponseEntity<List<PlaceDto.Response>> getPlacesByM(
+        @PathVariable("memberId") Long memberId) {
+        List<PlaceDto.Response> placesByMember = placeService.getPlacesByMember(memberId);
+        System.out.println(placesByMember);
+        return new ResponseEntity<>(placesByMember, HttpStatus.OK);
     }
 }

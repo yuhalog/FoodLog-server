@@ -45,6 +45,18 @@ public class PlaceDto {
             this.latitude = place.getLatitude();
             this.longitude = place.getLongitude();
         }
+
+        public static PlaceDto.Response entityToDto(Place place) {
+            return Response.builder()
+                .placeId(place.getId())
+                .kakaoId(place.getKakaoPlaceId())
+                .name(place.getName())
+                .address(place.getAddress())
+                .category(place.getCategory().getValue())
+                .latitude(place.getLatitude())
+                .longitude(place.getLongitude())
+                .build();
+        }
     }
 
     @Builder

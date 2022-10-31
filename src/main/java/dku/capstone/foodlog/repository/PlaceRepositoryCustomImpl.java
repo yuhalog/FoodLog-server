@@ -269,4 +269,18 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         Long count = getCountSearchPlaceByMenu(mapSearch);
         return new PageImpl<>(content, pageable, count);
     }
+
+    private BooleanExpression postMemberEq(Long memberId) {
+        return memberId != null? post.member.id.eq(memberId) : null;
+    }
+
+    public List<Place> getPlaceByMember(Long memberId) {
+        return queryFactory
+            .select(post.place).distinct()
+            .from(post)
+            .where(
+                postMemberEq(memberId)
+            )
+            .fetch();
+    }
 }

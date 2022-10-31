@@ -144,4 +144,11 @@ public class PlaceServiceImpl implements PlaceService{
 
         return new PageDto(postPage, fn);
     }
+
+    public List<PlaceDto.Response> getPlacesByMember(Long memberId) {
+        List<Place> places = placeRepository.getPlaceByMember(memberId);
+        List<PlaceDto.Response> placeResponseList  = places.stream().map(PlaceDto.Response::entityToDto).collect(Collectors.toList());
+
+        return placeResponseList;
+    }
 }

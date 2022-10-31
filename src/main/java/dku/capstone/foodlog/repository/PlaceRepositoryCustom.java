@@ -21,4 +21,6 @@ public interface PlaceRepositoryCustom {
     Page<Post> getPageRecommendPost(RecommendDto.Request recommendRequest, Member member, Pageable pageable);
 
     Page<Place> getPageSearchPlaceByMenu(MapDto.Search mapSearch, Pageable pageable);
+
+    List<Place> getPlaceByMember(Long memberId);
 }

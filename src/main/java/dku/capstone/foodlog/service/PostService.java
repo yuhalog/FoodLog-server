@@ -19,5 +19,7 @@ public interface PostService{
 
     PageDto getSubscriberPosts(Member member, Pageable pageable);
 
+    List<PostDto.Summary> getPostsByMemberAndPlace(Long memberId, Long placeId);
+
 }
 

@@ -38,8 +38,8 @@ public class PostController {
     @PostMapping(value = "/v1/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostDto.Response> createPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
-            @RequestPart(value = "file") List<MultipartFile> multipartFile,
-            @Parameter(name = "model", required = true, schema = @Schema(implementation = PostDto.Request.class), description = "User Details") @RequestPart(value = "post") PostDto.Request postRequest){
+            @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile,
+            @Parameter(name = "model", required = false, schema = @Schema(implementation = PostDto.Request.class), description = "User Details") @RequestPart(value = "post", required = false) PostDto.Request postRequest) {
 
         List<String> pictureUrlList = awsS3Service.uploadImage(multipartFile);
         PostDto.Response postResponse = postService.createPost(member, postRequest, pictureUrlList);
@@ -74,12 +74,21 @@ public class PostController {
     }
 
     @GetMapping("/v1/post/subscriber")
-    public PageDto recommendPost(
+    public ResponseEntity<?> recommendPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
         PageDto subscriberPosts = postService.getSubscriberPosts(member, pageable);
 
-        return subscriberPosts;
+        return new ResponseEntity<>(subscriberPosts, HttpStatus.OK);
+    }
+
+    @GetMapping("/v1/posts")
+    public ResponseEntity<List<PostDto.Summary>> getPostsListByMemberAndPlace(
+        @RequestParam Long memberId,
+        @RequestParam Long placeId) {
+        List<PostDto.Summary> postsByMember = postService.getPostsByMemberAndPlace(memberId, placeId);
+
+        return new ResponseEntity<>(postsByMember, HttpStatus.OK);
     }
 }
 

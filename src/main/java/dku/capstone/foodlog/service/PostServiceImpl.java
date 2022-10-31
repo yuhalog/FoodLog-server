@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -91,5 +92,12 @@ public class PostServiceImpl implements PostService {
         Function<Post,PostDto.Response> fn = (entity -> PostDto.Response.entityToDto(entity));
 
         return new PageDto(subscribePosts, fn);
+    }
+
+    public List<PostDto.Summary> getPostsByMemberAndPlace(Long memberId, Long placeId) {
+        List<Post> posts = postRepository.getPostsByMemberAndPlace(memberId, placeId);
+        List<PostDto.Summary> postsList = posts.stream().map(PostDto.Summary::entityToDto).collect(Collectors.toList());
+
+        return postsList;
     }
 }

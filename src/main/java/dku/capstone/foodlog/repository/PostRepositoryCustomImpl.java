@@ -61,4 +61,22 @@ public class PostRepositoryCustomImpl implements PostRepositoryCustom {
         Long count = subscribePostsCount(member);
         return new PageImpl<>(content, pageable, count);
     }
+
+    private BooleanExpression postMemberEq(Long memberId) {
+        return memberId != null? post.member.id.eq(memberId) : null;
+    }
+
+    private BooleanExpression postPlaceEq(Long placeId) {
+        return placeId != null? post.place.id.eq(placeId) : null;
+    }
+
+    public List<Post> getPostsByMemberAndPlace(Long memberId, Long placeId) {
+        return queryFactory
+            .selectFrom(post)
+            .where(
+                postMemberEq(memberId),
+                postPlaceEq(placeId)
+            )
+            .fetch();
+    }
 }

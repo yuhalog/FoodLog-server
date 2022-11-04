@@ -11,6 +11,7 @@ import dku.capstone.foodlog.dto.response.MemberDto;
 import dku.capstone.foodlog.repository.MemberRepository;
 import dku.capstone.foodlog.repository.SubscribeRepository;
 import dku.capstone.foodlog.utils.JwtUtils;
+import java.time.LocalDate;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,7 +50,7 @@ public class MemberService {
         Member member = Member.builder()
                 .email(email)
                 .username(username)
-                .birthday(memberJoinRequest.getBirthday())
+                .birthday(LocalDate.parse(memberJoinRequest.getBirthday()))
                 .selfBio(memberJoinRequest.getSelfBio())
                 .profilePicture(memberJoinRequest.getProfilePicture())
                 .gender(memberJoinRequest.getGender())
@@ -131,9 +132,10 @@ public class MemberService {
     public String createProfilePicture(MultipartFile multipartFile) {
         List<MultipartFile> picture = new ArrayList<>();
         picture.add(multipartFile);
-        List<String> pictureUrl = awsS3Service.uploadImage(picture);
+        String pictureName = awsS3Service.uploadImage(picture).get(0);
+        String imagePath = awsS3Service.getImagePath(pictureName);
 
-        return pictureUrl.get(0);
+        return imagePath;
     }
 
     /**

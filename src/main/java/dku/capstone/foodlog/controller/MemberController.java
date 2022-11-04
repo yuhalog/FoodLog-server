@@ -1,5 +1,7 @@
 package dku.capstone.foodlog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;
@@ -39,15 +41,27 @@ public class MemberController {
     }
 
     @ApiOperation(value = "", notes = "회원가입")
-    @PostMapping("/v1/join")
+    @PostMapping(value = "/v1/join")
     public ResponseEntity<LoginResponse> join(
-            @RequestPart(value = "memberJoinDto") MemberJoinRequest request,
-            @RequestPart(value = "profileImage", required = false) MultipartFile multipartFile) {
+            @RequestPart(value = "dto", required = false) String memberInfo,
+            @RequestPart(value = "image", required = false) MultipartFile multipartFile)
+            throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        MemberJoinRequest request = objectMapper.readValue(memberInfo, MemberJoinRequest.class);
 
         if (multipartFile != null) {
             String pictureUrl = memberService.createProfilePicture(multipartFile);
             request.setProfilePicture(pictureUrl);
         }
+        LoginResponse response = memberService.join(request);
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "", notes = "회원가입(사진 따로)")
+    @PostMapping("/v1/join/only")
+    public ResponseEntity<LoginResponse> joinOnly(
+        @RequestBody MemberJoinRequest request) {
         LoginResponse response = memberService.join(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);

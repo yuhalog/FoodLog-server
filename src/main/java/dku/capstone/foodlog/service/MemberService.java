@@ -103,10 +103,7 @@ public class MemberService {
      * 프로필 수정
      */
     @Transactional
-    public Long updateProfile(Long memberId, MemberProfileDto request) throws Exception {
-
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
+    public Long updateProfile(Member member, MemberJoinRequest request) throws Exception {
         if ((member.getUsername().equals(request.getUsername())) || (!isUsernameDuplicate(request.getUsername()))) {
             member.updateProfile(request);
             return member.getId();
@@ -141,10 +138,7 @@ public class MemberService {
     /**
      * 프로필 사진 삭제
      */
-    public void deleteProfilePicture(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> new NoSuchElementException("회원이 없습니다."));
-
+    public void deleteProfilePicture(Member member) {
         if (member.getProfilePicture()!=null) {
             String pictureUrl = member.getProfilePicture();
             String pictureName = pictureUrl.substring(55);
@@ -155,10 +149,9 @@ public class MemberService {
     /**
      * 프로필 사진 수정
      */
-    public String uploadProfilePicture(Long memberId, MultipartFile multipartFile) {
-        deleteProfilePicture(memberId);
+    public String uploadProfilePicture(Member member, MultipartFile multipartFile) {
+        deleteProfilePicture(member);
         String profilePicture = createProfilePicture(multipartFile);
-
         return profilePicture;
     }
 

@@ -1,7 +1,7 @@
 package dku.capstone.foodlog.domain;
 
 import dku.capstone.foodlog.constant.Gender;
-import dku.capstone.foodlog.dto.response.MemberProfileDto;
+import dku.capstone.foodlog.dto.request.MemberJoinRequest;
 import lombok.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
@@ -60,10 +60,10 @@ public class Member extends BaseTime{
         this.selfBio = selfBio;
     }
 
-    public void updateProfile(MemberProfileDto request) {
+    public void updateProfile(MemberJoinRequest request) {
         this.username = request.getUsername();
         this.gender = request.getGender();
-        this.birthday = request.getBirthday();
+        this.birthday = LocalDate.parse(request.getBirthday());
         this.selfBio = request.getSelfBio();
         this.profilePicture = request.getProfilePicture();
     }

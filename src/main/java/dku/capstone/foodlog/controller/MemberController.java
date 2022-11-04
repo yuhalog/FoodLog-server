@@ -74,20 +74,21 @@ public class MemberController {
     }
 
     @ApiOperation(value = "", notes = "프로필 수정")
-    @PutMapping("/v1/member/profile/{id}")
+    @PutMapping("/v1/member/profile")
     public ResponseEntity<?> createMemberProfile(
-            @PathVariable("id") Long memberId,
-            @RequestPart(value = "member") MemberProfileDto request,
-            @RequestPart(value = "file", required = false) MultipartFile multipartFile) {
+            @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
+            @RequestPart(value = "member") String memberInfo,
+            @RequestPart(value = "file", required = false) MultipartFile multipartFile) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        //TODO 한글 깨짐 현상 확인
+        MemberJoinRequest request = objectMapper.readValue(memberInfo, MemberJoinRequest.class);
         Long response = null;
-
         try {
             if (multipartFile != null) {
-                String pictureUrl = memberService.uploadProfilePicture(memberId, multipartFile);
+                String pictureUrl = memberService.uploadProfilePicture(member, multipartFile);
                 request.setProfilePicture(pictureUrl);
             }
-
-            response = memberService.updateProfile(memberId, request);
+            response = memberService.updateProfile(member, request);
         } catch (NoSuchElementException e) {
             log.error(e.getMessage());
         } catch (Exception e) {

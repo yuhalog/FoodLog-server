@@ -80,6 +80,8 @@ public class MemberController {
             if (multipartFile != null) {
                 String pictureUrl = memberService.uploadProfilePicture(member, multipartFile);
                 request.setProfilePicture(pictureUrl);
+            } else {
+                request.setProfilePicture(member.getProfilePicture());
             }
             response = memberService.updateProfile(member, request);
         } catch (NoSuchElementException e) {

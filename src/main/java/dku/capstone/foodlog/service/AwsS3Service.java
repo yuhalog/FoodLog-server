@@ -45,12 +45,18 @@ public class AwsS3Service {
             } catch(IOException e) {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 업로드에 실패했습니다.");
             }
-
             fileImgList.add(fileName);
         });
 
         return fileImgList;
     }
+
+    public String uploadMemberProfileImage(MultipartFile multipartFile) {
+        List<MultipartFile> multipartFiles = List.of(multipartFile);
+        String imageName = uploadImage(multipartFiles).get(0);
+        return getImagePath(imageName);
+    }
+
     public String getImagePath(String imageName) {
         return amazonS3Client.getUrl(bucket, imageName).toString();
     }

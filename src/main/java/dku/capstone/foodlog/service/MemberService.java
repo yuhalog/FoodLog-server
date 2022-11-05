@@ -127,12 +127,7 @@ public class MemberService {
      * 프로필 사진 등록
      */
     public String createProfilePicture(MultipartFile multipartFile) {
-        List<MultipartFile> picture = new ArrayList<>();
-        picture.add(multipartFile);
-        String pictureName = awsS3Service.uploadImage(picture).get(0);
-        String imagePath = awsS3Service.getImagePath(pictureName);
-
-        return imagePath;
+        return awsS3Service.uploadMemberProfileImage(multipartFile);
     }
 
     /**

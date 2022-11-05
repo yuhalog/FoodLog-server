@@ -1,5 +1,7 @@
 package dku.capstone.foodlog.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.PageDto;
 import dku.capstone.foodlog.dto.PostDto;
@@ -9,6 +11,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,14 +37,17 @@ public class PostController {
 
     private final PostService postService;
     private final AwsS3Service awsS3Service;
+    private final ObjectMapper objectMapper;
 
     @ApiOperation(value = "게시물 생성", notes = "게시물 생성", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @PostMapping(value = "/v1/post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<PostDto.Response> createPost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestPart(value = "file", required = false) List<MultipartFile> multipartFile,
-            @Parameter(name = "model", required = false, schema = @Schema(implementation = PostDto.Request.class), description = "User Details") @RequestPart(value = "post", required = false) PostDto.Request postRequest) {
-
+            @Parameter(name = "model", schema = @Schema(implementation = PostDto.Request.class), description = "User Details") @RequestPart(value = "post", required = false) String post)
+            throws JsonProcessingException, UnsupportedEncodingException {
+        String decodePost = URLDecoder.decode(post, "UTF-8");
+        PostDto.Request postRequest = objectMapper.readValue(decodePost, PostDto.Request.class);
         List<String> pictureUrlList = awsS3Service.uploadImage(multipartFile);
         PostDto.Response postResponse = postService.createPost(member, postRequest, pictureUrlList);
 
@@ -74,7 +81,7 @@ public class PostController {
     }
 
     @GetMapping("/v1/post/subscriber")
-    public ResponseEntity<?> recommendPost(
+    public ResponseEntity<?> subscribePost(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @PageableDefault(size=10, sort = "placeId", direction = Sort.Direction.DESC) Pageable pageable) {
         PageDto subscriberPosts = postService.getSubscriberPosts(member, pageable);

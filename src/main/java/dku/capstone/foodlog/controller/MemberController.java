@@ -6,10 +6,11 @@ import dku.capstone.foodlog.domain.Member;
 import dku.capstone.foodlog.dto.request.LoginRequest;
 import dku.capstone.foodlog.dto.request.MemberJoinRequest;
 import dku.capstone.foodlog.dto.response.MemberPageResponse;
-import dku.capstone.foodlog.dto.response.MemberProfileDto;
 import dku.capstone.foodlog.dto.response.LoginResponse;
 import dku.capstone.foodlog.service.MemberService;
 import io.swagger.annotations.ApiOperation;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -25,12 +26,13 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.NoSuchElementException;
 
 @Slf4j
-@RequestMapping("/api")
+@RequestMapping(value = "/api", produces = "application/json; charset=utf8")
 @RequiredArgsConstructor
 @RestController
 public class MemberController {
 
     private final MemberService memberService;
+    private final ObjectMapper objectMapper;
 
     @ApiOperation(value = "", notes = "로그인")
     @PostMapping("/v1/login")
@@ -45,23 +47,14 @@ public class MemberController {
     public ResponseEntity<LoginResponse> join(
             @RequestPart(value = "dto", required = false) String memberInfo,
             @RequestPart(value = "image", required = false) MultipartFile multipartFile)
-            throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        MemberJoinRequest request = objectMapper.readValue(memberInfo, MemberJoinRequest.class);
+            throws JsonProcessingException, UnsupportedEncodingException {
+        String decodeMemberInfo = URLDecoder.decode(memberInfo, "UTF-8");
+        MemberJoinRequest request = objectMapper.readValue(decodeMemberInfo, MemberJoinRequest.class);
 
         if (multipartFile != null) {
             String pictureUrl = memberService.createProfilePicture(multipartFile);
             request.setProfilePicture(pictureUrl);
         }
-        LoginResponse response = memberService.join(request);
-
-        return new ResponseEntity<>(response, HttpStatus.OK);
-    }
-
-    @ApiOperation(value = "", notes = "회원가입(사진 따로)")
-    @PostMapping("/v1/join/only")
-    public ResponseEntity<LoginResponse> joinOnly(
-        @RequestBody MemberJoinRequest request) {
         LoginResponse response = memberService.join(request);
 
         return new ResponseEntity<>(response, HttpStatus.OK);
@@ -78,10 +71,10 @@ public class MemberController {
     public ResponseEntity<?> createMemberProfile(
             @AuthenticationPrincipal(expression = "#this == 'anonymousUser' ? null : member") Member member,
             @RequestPart(value = "member") String memberInfo,
-            @RequestPart(value = "file", required = false) MultipartFile multipartFile) throws JsonProcessingException {
-        ObjectMapper objectMapper = new ObjectMapper();
-        //TODO 한글 깨짐 현상 확인
-        MemberJoinRequest request = objectMapper.readValue(memberInfo, MemberJoinRequest.class);
+            @RequestPart(value = "file", required = false) MultipartFile multipartFile)
+            throws JsonProcessingException, UnsupportedEncodingException {
+        String decodeMemberInfo = URLDecoder.decode(memberInfo, "UTF-8");
+        MemberJoinRequest request = objectMapper.readValue(decodeMemberInfo, MemberJoinRequest.class);
         Long response = null;
         try {
             if (multipartFile != null) {

@@ -30,7 +30,7 @@ public class MemberPageResponse {
                 .id(subscribe.getId())
                 .memberId(subscribe.getMember().getId())
                 .username(subscribe.getMember().getUsername())
-                .profilePicture(subscribe.getMember().getUsername())
+                .profilePicture(subscribe.getMember().getProfilePicture())
                 .build();
     }
 

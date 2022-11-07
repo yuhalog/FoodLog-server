@@ -22,8 +22,6 @@ public class MapDto {
 
         private Long placePostId;
 
-        private Long postId;
-
         private String name;
 
         private String category;
@@ -36,22 +34,10 @@ public class MapDto {
 
         private Double longitude;
 
-        public Response(Long placeId, Long placePostId, String name, String category, Float averageRating, String address, Double latitude, Double longitude) {
-            this.placeId = placeId;
-            this.placePostId = placePostId;
-            this.name = name;
-            this.category = category;
-            this.averageRating = averageRating;
-            this.address = address;
-            this.latitude = latitude;
-            this.longitude = longitude;
-        }
-
         public static Response entityToDto(Place place) {
             return Response.builder()
                     .placeId(place.getId())
                     .placePostId(place.getPlacePost().getId())
-                    .postId(place.getPostList().get(0).getId())
                     .name(place.getName())
                     .category(place.getCategory().getValue())
                     .averageRating(place.getPlacePost().getAverageRating())

@@ -28,7 +28,7 @@ public class PlaceController {
     @PostMapping("/v1/map")
     public ResponseEntity<?> getPlaceWithFilter(
             @RequestBody MapDto.Filter mapFilterRequest) {
-        List<MapDto.Response> responses = placeService.searchPlaceWithFilter(mapFilterRequest);
+        List<MapDto.Response> responses = placeService.filterPlace(mapFilterRequest);
         return new ResponseEntity<>(responses, HttpStatus.OK);
     }
 

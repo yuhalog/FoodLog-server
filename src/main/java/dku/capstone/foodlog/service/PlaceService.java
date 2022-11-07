@@ -15,7 +15,7 @@ public interface PlaceService {
 
     Place checkPlaceInDb(PostDto.Request postRequest);
 
-    List<MapDto.Response> searchPlaceWithFilter(MapDto.Filter mapFilterRequest);
+    List<MapDto.Response> filterPlace(MapDto.Filter mapFilterRequest);
 
     PageDto searchPlaceByName(MapDto.Search mapSearch, Pageable pageable);
 

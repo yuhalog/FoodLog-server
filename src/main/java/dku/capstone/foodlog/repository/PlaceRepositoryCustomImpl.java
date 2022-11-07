@@ -2,6 +2,7 @@ package dku.capstone.foodlog.repository;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import dku.capstone.foodlog.constant.FoodCategory;
 import dku.capstone.foodlog.constant.FoodPurpose;
@@ -77,7 +78,9 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
         }
     }
 
-    public List<Place> searchPlace(MapDto.Filter mapFilter) {
+    private JPAQuery<Place> filterPlace(MapDto.Filter mapFilter) {
+
+        //TODO if문으로 delta값으로 나눠서 bulk query 사용하면 디비에서 바로 지워줌
 
         return queryFactory
                 .selectFrom(place)
@@ -89,7 +92,17 @@ public class PlaceRepositoryCustomImpl implements PlaceRepositoryCustom{
                         latitudeBetween(mapFilter.getLatitude(), mapFilter.getLatitudeDelta()),
                         longitudeBetween(mapFilter.getLongitude(), mapFilter.getLongitudeDelta()))
                 .join(place.placePost, placePost)
-                .fetch();
+            .orderBy(place.placePost.averageRating.desc());
+    }
+
+    public List<Place> filterPlaceAll(MapDto.Filter mapFilter) {
+        return filterPlace(mapFilter).fetch();
+    }
+
+    public List<Place> filterPlaceLimit(MapDto.Filter mapFilter) {
+        return filterPlace(mapFilter)
+            .limit(10)
+            .fetch();
     }
 
     private BooleanExpression placeNameContains(String name) {

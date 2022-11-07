@@ -108,10 +108,17 @@ public class PlaceServiceImpl implements PlaceService{
         return placeRepository.save(place);
     }
 
-    public List<MapDto.Response> searchPlaceWithFilter(MapDto.Filter mapFilterRequest) {
-        List<Place> places = placeRepository.searchPlace(mapFilterRequest);
+    public List<MapDto.Response> filterPlace(MapDto.Filter mapFilterRequest) {
+        List<Place> places = filterPlaceByDelta(mapFilterRequest);
         List<MapDto.Response> placeResponseList  = places.stream().map(MapDto.Response::entityToDto).collect(Collectors.toList());
         return placeResponseList;
+    }
+
+    private List<Place> filterPlaceByDelta(MapDto.Filter mapFilterRequest) {
+        if (mapFilterRequest.getLatitudeDelta() >= 0.0025) {
+            return placeRepository.filterPlaceLimit(mapFilterRequest);
+        }
+        return placeRepository.filterPlaceAll(mapFilterRequest);
     }
 
     public PageDto searchPlaceByName(MapDto.Search mapSearch, Pageable pageable) {

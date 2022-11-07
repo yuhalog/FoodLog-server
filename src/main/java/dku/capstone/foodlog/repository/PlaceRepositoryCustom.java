@@ -12,7 +12,9 @@ import java.util.List;
 
 public interface PlaceRepositoryCustom {
 
-    List<Place> searchPlace(MapDto.Filter mapRequest);
+    List<Place> filterPlaceAll(MapDto.Filter mapRequest);
+
+    List<Place> filterPlaceLimit(MapDto.Filter mapRequest);
 
     Page<Place> getPageSearchPlaceByName(MapDto.Search mapSearch, Pageable pageable);
 

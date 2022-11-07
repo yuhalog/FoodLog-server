@@ -158,4 +158,9 @@ public class PlaceServiceImpl implements PlaceService{
 
         return placeResponseList;
     }
+
+    @Transactional
+    public void deletePlace(Place place) {
+        placeRepository.delete(place);
+    }
 }

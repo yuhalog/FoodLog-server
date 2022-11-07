@@ -64,4 +64,9 @@ public class PlacePostServiceImpl implements PlacePostService{
 
         return new PlacePostDto.Detail(placePost);
     }
+
+    @Transactional
+    public void deletePlacePost(PlacePost placePost) {
+        placePostRepository.delete(placePost);
+    }
 }

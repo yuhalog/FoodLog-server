@@ -15,4 +15,6 @@ public interface PlacePostService {
 
     PlacePostDto.Detail getPlacePostDetail(Long placePostId);
 
+    void deletePlacePost(PlacePost placePost);
+
 }

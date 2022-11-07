@@ -26,4 +26,6 @@ public interface PlaceService {
     PageDto recommendPost(RecommendDto.Request request, Member member, Pageable pageable);
 
     List<PlaceDto.Response> getPlacesByMember(Long memberId);
+
+    void deletePlace(Place place);
 }

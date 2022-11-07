@@ -81,10 +81,19 @@ public class PostServiceImpl implements PostService {
     public void deletePost(Member member, Long postId) {
         Post post = findPostById(postId);
         post.getPlace().getPostList().remove(post);
+        checkDeletePlace(post);
         member.getPostList().remove(post);
         postPictureService.deletePostPictureList(post.getPictureList());
-        placePostService.removePlacePost(post.getPlace().getPlacePost());
         postRepository.delete(post);
+    }
+
+    private void checkDeletePlace(Post post) {
+        if (post.getPlace().getPostList().size() == 0) {
+            placePostService.deletePlacePost(post.getPlace().getPlacePost());
+            placeService.deletePlace(post.getPlace());
+            return;
+        }
+        placePostService.removePlacePost(post.getPlace().getPlacePost());
     }
 
     public PageDto getSubscriberPosts(Member member, Pageable pageable) {

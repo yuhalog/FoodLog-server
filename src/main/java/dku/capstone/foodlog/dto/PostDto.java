@@ -29,6 +29,8 @@ public class PostDto {
 
         private Integer rating;
 
+        private Float averageRating;
+
         private String purpose;
 
         private PlaceDto.Response place;
@@ -38,6 +40,7 @@ public class PostDto {
             this.picture = post.getPictureList().get(0).getPictureUrl();
             this.review = post.getReview();
             this.rating = post.getRating();
+            this.averageRating = post.getPlace().getPlacePost().getAverageRating();
             this.purpose = post.getPurpose().getValue();
             this.place = new PlaceDto.Response(post.getPlace());
         }
@@ -48,6 +51,7 @@ public class PostDto {
                     .picture(post.getPictureList().get(0).getPictureUrl())
                     .review(post.getReview())
                     .rating(post.getRating())
+                    .averageRating(post.getPlace().getPlacePost().getAverageRating())
                     .purpose(post.getPurpose().getValue())
                     .place(new PlaceDto.Response(post.getPlace()))
                     .build();

@@ -86,7 +86,7 @@ public class PlaceServiceImpl implements PlaceService{
     }
 
     private FoodCategory parsingCategory(String category) {
-        FoodCategory foodCategory = FoodCategory.valueOfFoodCategory(category);
+        FoodCategory foodCategory = FoodCategory.findSubCategory(category);
 
         if (foodCategory!=null) {
             return foodCategory;
